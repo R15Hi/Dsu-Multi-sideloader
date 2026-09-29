@@ -103,6 +103,13 @@ fun Settings(
 
         Title(title = stringResource(id = R.string.other))
         PreferenceItem(
+            title = stringResource(id = R.string.dynamic_colors_title),
+            description = stringResource(id = R.string.dynamic_colors_description),
+            showToggle = true,
+            isChecked = uiState.preferences[AppPrefs.USE_DYNAMIC_COLORS]!!,
+            onClick = { settingsViewModel.togglePreference(AppPrefs.USE_DYNAMIC_COLORS, !it) },
+        )
+        PreferenceItem(
             title = stringResource(id = R.string.operation_mode),
             description = settingsViewModel.checkOperationMode(),
         )

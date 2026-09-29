@@ -162,6 +162,9 @@
 
     <string name="other">Other</string>
 
+    <string name="dynamic_colors_title">Dynamic colors</string>
+    <string name="dynamic_colors_description">Apply Material You theme</string>
+
     <string name="operation_mode">Operation mode</string>
 
     <string name="about">About</string>

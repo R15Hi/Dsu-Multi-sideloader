@@ -34,7 +34,7 @@ class SettingsViewModel @Inject constructor(
     fun reloadPreferences() {
         uiState.value.preferences.forEach { entry ->
             viewModelScope.launch {
-                val isEnabled = readBoolPref(entry.key)
+                val isEnabled = readBoolPref(entry.key, entry.value)
                 togglePreference(entry.key, isEnabled)
             }
         }

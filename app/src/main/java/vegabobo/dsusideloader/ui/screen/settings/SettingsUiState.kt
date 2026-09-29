@@ -15,6 +15,7 @@ data class SettingsUiState(
         AppPrefs.UMOUNT_SD to false,
         AppPrefs.DISABLE_STORAGE_CHECK to false,
         AppPrefs.FULL_LOGCAT_LOGGING to false,
+        AppPrefs.USE_DYNAMIC_COLORS to true,
     ),
     val dialogSheetDisplay: DialogSheetState = DialogSheetState.NONE,
     val isRoot: Boolean = false,
