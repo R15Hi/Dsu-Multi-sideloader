@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import vegabobo.dsusideloader.BuildConfig
+import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.core.BaseViewModel
 import vegabobo.dsusideloader.core.StorageManager
 import vegabobo.dsusideloader.installer.adb.AdbInstallationHandler
@@ -31,6 +32,7 @@ import vegabobo.dsusideloader.model.Session
 import vegabobo.dsusideloader.preferences.AppPrefs
 import vegabobo.dsusideloader.preparation.InstallationStep
 import vegabobo.dsusideloader.preparation.Preparation
+import vegabobo.dsusideloader.service.InstallationNotificationHelper
 import vegabobo.dsusideloader.service.PrivilegedProvider
 import vegabobo.dsusideloader.util.DevicePropUtils
 import vegabobo.dsusideloader.util.FilenameUtils
@@ -109,6 +111,16 @@ class HomeViewModel @Inject constructor(
                     return@run
                 }
                 if (isInstalled) {
+                    val activeName = vegabobo.dsusideloader.installer.multidsu.MultiDsuManager.getActiveDsuName()
+                    if (activeName.isNotEmpty()) {
+                        updateInstallationCard { it.copy(installationStep = InstallationStep.DSU_ALREADY_INSTALLED) }
+                        viewModelScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+                            android.util.Log.d("MultiDsu", "Auto-stashing previously restored DSU: $activeName")
+                            vegabobo.dsusideloader.installer.multidsu.MultiDsuManager.backupCurrentDsu(activeName)
+                            resetInstallationCard()
+                        }
+                        return@run
+                    }
                     updateInstallationCard { it.copy(installationStep = InstallationStep.DSU_ALREADY_INSTALLED) }
                     return@run
                 }
@@ -342,6 +354,18 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun onClickBackupAndHide() {
+        updateInstallationCard { it.copy(installationStep = InstallationStep.PROCESSING) }
+        viewModelScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+            val fileName = session.userSelection.selectedFileName
+            val backupName = if (fileName.isNotEmpty()) fileName.substringBeforeLast(".") else "gsi_" + System.currentTimeMillis()
+            android.util.Log.d("MultiDsu", "Instant backup triggered for: $backupName")
+            vegabobo.dsusideloader.installer.multidsu.MultiDsuManager.backupCurrentDsu(backupName)
+            resetInstallationCard()
+            initialChecks()
+        }
+    }
+
     fun onClickDiscardGsiAndStartInstallation() {
         updateInstallationCard { it.copy(installationStep = InstallationStep.PROCESSING) }
         PrivilegedProvider.run {
@@ -521,10 +545,12 @@ class HomeViewModel @Inject constructor(
 
     private fun onRootInstallationSuccess() {
         updateInstallationCard { it.copy(installationStep = InstallationStep.INSTALL_SUCCESS_REBOOT_DYN_OS) }
+        InstallationNotificationHelper.showComplete(application)
     }
 
     private fun onInstallationSuccess() {
         updateInstallationCard { it.copy(installationStep = InstallationStep.INSTALL_SUCCESS) }
+        InstallationNotificationHelper.showComplete(application)
     }
 
     private fun onLogLineReceived() {
@@ -534,8 +560,14 @@ class HomeViewModel @Inject constructor(
     private fun onStepUpdate(step: InstallationStep) =
         updateInstallationCard { it.copy(installationStep = step) }
 
-    private fun onPreparationProgressUpdate(progress: Float) =
+    private fun onPreparationProgressUpdate(progress: Float) {
         updateInstallationCard { it.copy(installationProgress = progress) }
+        InstallationNotificationHelper.updateProgress(
+            application,
+            application.getString(R.string.notif_extracting),
+            progress,
+        )
+    }
 
     private fun onInstallationError(error: InstallationStep, errorContent: String) =
         updateInstallationCard {
@@ -549,10 +581,16 @@ class HomeViewModel @Inject constructor(
             }
         }
 
-    private fun onInstallationProgressUpdate(progress: Float, partition: String) =
+    private fun onInstallationProgressUpdate(progress: Float, partition: String) {
         updateInstallationCard {
             it.copy(currentPartitionText = partition, installationProgress = progress)
         }
+        InstallationNotificationHelper.updateProgress(
+            application,
+            "${application.getString(R.string.notif_installing)} $partition",
+            progress,
+        )
+    }
 
     private fun onCreatePartition(partition: String) =
         updateInstallationCard {

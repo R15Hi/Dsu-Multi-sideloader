@@ -25,6 +25,7 @@ fun InstallationCardStep(
     onClickRebootToDynOS: () -> Unit,
     onClickViewLogs: () -> Unit,
     onClickViewCommands: () -> Unit,
+    onClickBackupAndHide: (() -> Unit)? = null,
 ) {
     when (uiState.installationStep) {
         InstallationStep.NOT_INSTALLING ->
@@ -183,7 +184,7 @@ fun InstallationCardStep(
             )
         InstallationStep.ERROR_CREATE_PARTITION ->
             ProgressableCardContent(
-                text = stringResource(R.string.failed_create_partition),
+                text = stringResource(R.string.failed_create_partition, uiState.errorText),
                 textSecondButton = stringResource(id = R.string.mreturn),
                 onClickSecondButton = onClickClear,
             )
@@ -254,6 +255,8 @@ fun InstallationCardStep(
                 onClickFirstButton = onClickRebootToDynOS,
                 textSecondButton = stringResource(id = R.string.discard),
                 onClickSecondButton = onClickDiscardDsu,
+                textThirdButton = "Backup & Hide",
+                onClickThirdButton = onClickBackupAndHide,
             )
         InstallationStep.REQUIRES_ADB_CMD_TO_CONTINUE ->
             ProgressableCardContent(

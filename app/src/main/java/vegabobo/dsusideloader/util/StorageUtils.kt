@@ -5,6 +5,13 @@ import android.os.StatFs
 
 class StorageUtils {
 
+    data class StorageStats(
+        val totalGb: Int,
+        val usedGb: Int,
+        val availableGb: Int,
+        val progress: Float,
+    )
+
     companion object {
 
         fun getAllocInfo(allowedPercentage: Float): Pair<Boolean, Int> {
@@ -27,6 +34,21 @@ class StorageUtils {
 
             val maximumAllowedForAllocation = availSizeInGb / 2
             return Pair(hasAvailableStorage, maximumAllowedForAllocation)
+        }
+
+        fun getStorageStats(): StorageStats {
+            val statFs = StatFs(Environment.getDataDirectory().absolutePath)
+            val blockSize = statFs.blockSizeLong
+            val totalSize = statFs.blockCountLong * blockSize
+            val availableSize = statFs.availableBlocksLong * blockSize
+            val usedSize = totalSize - availableSize
+
+            val totalGb = (totalSize / 1024L / 1024L / 1024L).toInt()
+            val usedGb = (usedSize / 1024L / 1024L / 1024L).toInt()
+            val availableGb = (availableSize / 1024L / 1024L / 1024L).toInt()
+            val progress = usedSize.toFloat() / totalSize.toFloat()
+
+            return StorageStats(totalGb, usedGb, availableGb, progress)
         }
     }
 }

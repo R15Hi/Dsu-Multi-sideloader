@@ -6,6 +6,7 @@ enum class DialogSheetState {
     NONE,
     BUILT_IN_INSTALLER,
     DISABLE_STORAGE_CHECK,
+    CLEAN_DSU_STATE,
 }
 
 data class SettingsUiState(
@@ -20,4 +21,6 @@ data class SettingsUiState(
     val dialogSheetDisplay: DialogSheetState = DialogSheetState.NONE,
     val isRoot: Boolean = false,
     val isDevOptEnabled: Boolean = false,
+    val isCleaning: Boolean = false,
+    val themeStyle: String = "dynamic",
 )

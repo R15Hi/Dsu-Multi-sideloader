@@ -46,6 +46,7 @@ fun PreferenceItem(
                 imageVector = icon,
                 contentDescription = null,
                 modifier = Modifier.padding(end = 22.dp),
+                tint = androidx.compose.material3.MaterialTheme.colorScheme.primary,
             )
         }
         Row(modifier = Modifier.weight(0.5F)) {

@@ -21,4 +21,5 @@ object AppPrefs {
     const val DISABLE_STORAGE_CHECK = "disable_storage_check"
     const val FULL_LOGCAT_LOGGING = "full_logcat_logging"
     const val USE_DYNAMIC_COLORS = "use_dynamic_colors"
+    const val THEME_STYLE = "theme_style"
 }

@@ -32,7 +32,6 @@ fun AdbScreen(
             TopBar(
                 barTitle = stringResource(id = R.string.installation),
                 scrollBehavior = it,
-                onClickIcon = { navigate(Destinations.Preferences) },
                 onClickBackButton = { navigate(Destinations.Up) },
             )
         },

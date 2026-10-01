@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">DSU Sideloader</string>
+    <string name="app_name" translatable="false">Multi-Dsu</string>
 
     <!--
         Home screen
@@ -244,4 +244,14 @@
 
     <string name="close_app">Close app</string>
     <string name="close_app_question">Close app?</string>
+
+    <!-- Quick Settings Tiles -->
+    <string name="tile_reboot_dsu">Reboot to DSU</string>
+    <string name="tile_discard_dsu">Discard DSU</string>
+
+    <!-- Notification -->
+    <string name="notif_channel_install">DSU Installation Progress</string>
+    <string name="notif_extracting">Extracting…</string>
+    <string name="notif_installing">Installing…</string>
+    <string name="notif_install_done">Installation complete</string>
 </resources>

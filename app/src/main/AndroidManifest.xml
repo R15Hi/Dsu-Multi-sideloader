@@ -11,6 +11,7 @@
 
     <!-- MANAGE_DYNAMIC_SYSTEM has signature protection level, but declared anyway -->
     <uses-permission android:name="android.permission.MANAGE_DYNAMIC_SYSTEM" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <!-- Permissions used by updater -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -57,6 +58,30 @@
             android:name="vegabobo.dsusideloader.service.PrivilegedSystemService"
             android:enabled="true"
             android:exported="false" />
+
+        <!-- Quick Settings Tile: Reboot to DSU -->
+        <service
+            android:name="vegabobo.dsusideloader.service.RebootDsuTileService"
+            android:label="@string/tile_reboot_dsu"
+            android:icon="@drawable/app_icon_mono"
+            android:exported="true"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
+        <!-- Quick Settings Tile: Discard DSU -->
+        <service
+            android:name="vegabobo.dsusideloader.service.DiscardDsuTileService"
+            android:label="@string/tile_discard_dsu"
+            android:icon="@drawable/app_icon_mono"
+            android:exported="true"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
 
     </application>
 

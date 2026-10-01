@@ -42,6 +42,11 @@ class SettingsViewModel @Inject constructor(
         if (session.isRoot()) {
             _uiState.update { it.copy(isRoot = true) }
         }
+
+        viewModelScope.launch {
+            val themeStyle = readStringPref(AppPrefs.THEME_STYLE, "dynamic")
+            _uiState.update { it.copy(themeStyle = themeStyle) }
+        }
     }
 
     init {
@@ -57,6 +62,16 @@ class SettingsViewModel @Inject constructor(
                     cloneMap[preference] = value
                     Log.d(tag, "preference: $preference, isEnabled: $value")
                     it.copy(preferences = cloneMap)
+                }
+            }
+        }
+    }
+
+    fun updateThemeStyle(themeStyle: String) {
+        viewModelScope.launch {
+            updateStringPref(AppPrefs.THEME_STYLE, themeStyle) {
+                _uiState.update {
+                    it.copy(themeStyle = themeStyle)
                 }
             }
         }
@@ -82,6 +97,35 @@ class SettingsViewModel @Inject constructor(
             _uiState.update { it.copy(isDevOptEnabled = isDevOptEnabled) }
             if (isDevOptEnabled) {
                 reloadPreferences()
+            }
+        }
+    }
+
+    fun cleanupDsu() {
+        viewModelScope.launch {
+            if (vegabobo.dsusideloader.installer.multidsu.MultiDsuManager.hasRoot()) {
+                _uiState.update { it.copy(isCleaning = true) }
+                com.topjohnwu.superuser.Shell.cmd(
+                    "gsi_tool wipe", // Wipe before deleting to clear internal HAL state
+                    "gsi_tool disable",
+                    "find /data/gsi -mindepth 1 -maxdepth 1 ! -name dsu_backups -exec rm -rf {} +",
+                    "find /metadata/gsi -mindepth 1 -maxdepth 1 ! -name dsu_backups -exec rm -rf {} +",
+                    "rm -rf /data/gsid",
+                    "rm -rf /data/local/tmp/gsid",
+                    "rm -rf /data/local/tmp/dsu",
+                    "pm clear com.android.dynsystem",
+                    "stop dsu",
+                    "start dsu",
+                ).exec()
+
+                kotlinx.coroutines.delay(2000) // Show progress bar for 2 seconds
+                _uiState.update { it.copy(isCleaning = false) }
+
+                // Restart app to refresh state and reconnect dead binder to gsid
+                val intent = application.packageManager.getLaunchIntentForPackage(application.packageName)
+                intent?.addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP or android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                application.startActivity(intent)
+                Runtime.getRuntime().exit(0)
             }
         }
     }

@@ -28,7 +28,7 @@ fun DialogItem(
             modifier = Modifier
                 .size(32.dp)
                 .padding(end = 6.dp),
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            tint = MaterialTheme.colorScheme.primary,
             imageVector = icon,
             contentDescription = "Icon",
         )

@@ -13,7 +13,6 @@ import androidx.compose.runtime.getValue
 import androidx.core.view.WindowCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
 import com.topjohnwu.superuser.Shell
 import com.topjohnwu.superuser.ipc.RootService
 import dagger.hilt.android.AndroidEntryPoint
@@ -144,11 +143,11 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-            val useDynamicColors by dataStore.data.map {
-                it[booleanPreferencesKey(AppPrefs.USE_DYNAMIC_COLORS)] ?: true
-            }.collectAsState(initial = true)
+            val themeStyle by dataStore.data.map {
+                it[androidx.datastore.preferences.core.stringPreferencesKey(AppPrefs.THEME_STYLE)] ?: "dynamic"
+            }.collectAsState(initial = "dynamic")
 
-            DSUHelperTheme(dynamicColor = useDynamicColors) {
+            DSUHelperTheme(themeStyle = themeStyle) {
                 Navigation()
             }
         }

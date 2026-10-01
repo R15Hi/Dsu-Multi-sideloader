@@ -46,6 +46,28 @@ For testing builds, you can check artifacts at [Actions](https://github.com/Vega
 
 For more usage information, you can check [Operation modes](#operation-modes)
 
+## Multi-DSU Manager
+
+The app now features a **Multi-DSU Manager** tab, allowing you to manage multiple Dynamic System Updates seamlessly:
+- **View Installations**: Easily refresh and view all currently configured DSUs on your device.
+- **Restore & Boot**: Restore previous backups and initiate the boot process into your chosen DSU directly from the app.
+
+#### How does it work?
+Android natively only allows a single Dynamic System Update to be installed at any given time. The Multi-DSU Manager overcomes this limitation (Requires Root) by "stashing" your active DSU installation. 
+1. When you stash an active DSU, the app safely moves its block maps and metadata to a backup folder.
+2. This tricks Android into thinking the DSU slot is empty, allowing you to install a brand new GSI alongside your old one.
+3. When you want to switch back, simply "Restore" a stashed DSU from the manager. The app moves its files back into the active slot and prepares it for boot.
+4. **Auto-stashing**: If you have a restored DSU but you reboot back into your original host system, the app will automatically stash it away in the background so your DSU slot is always kept free!
+
+## UI/UX Improvements
+
+- **Centered Dialogs & Blurs**: All settings and theme selection dialogs now pop up in the center of the screen with a modern, blurred, and dimmed background for a cleaner experience.
+- **Dynamic Header Text**: The top header text now seamlessly and gradually centers itself when scrolling, providing an elegant, smooth scrolling experience.
+- **Header Icon Cleanup**: Removed the extra icon from the header completely to provide a cleaner layout without visual duplication.
+- **Colorful Icons**: Replaced plain icons with colorful, vibrant vector icons in the home screen cards (like the "What is DSU" card and Userdata image size cards).
+- **Redesigned App Icon**: Refreshed the launcher icon by increasing the width and proportions of the phone element to make it feel more balanced and natural.
+- **Refresh State Indicator**: Added a centered visual loading indicator to the Multi-DSU tab so you always know when your installations are being scanned or refreshed.
+
 ## Operation modes
 
 DSU Sideloader support multiple operation modes, they will define how our app will work, also, the operation mode is obtained automatically, and by now, is impossible to change it manually, the picked operation mode will be the best available (the priority is written below, in which, the most feature supported, is the highest number, and the most basic one is the lowest).
