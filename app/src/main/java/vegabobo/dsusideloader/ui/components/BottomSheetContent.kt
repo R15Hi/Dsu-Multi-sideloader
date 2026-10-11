@@ -46,7 +46,7 @@ fun BottomSheetContent(
         )
         Spacer(modifier = Modifier.height(12.dp))
         Icon(
-            tint = MaterialTheme.colorScheme.onBackground,
+            tint = MaterialTheme.colorScheme.primary,
             imageVector = icon,
             contentDescription = "icon",
             modifier = Modifier

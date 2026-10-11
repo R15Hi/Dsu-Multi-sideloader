@@ -19,11 +19,11 @@ android {
     val versionName: String by rootProject.extra
     val packageName: String by rootProject.extra
 
-    namespace = packageName
+    namespace = "vegabobo.dsusideloader"
     compileSdk = 33
 
     defaultConfig {
-        this.applicationId = packageName
+        this.applicationId = "roy.multidsusideloader"
         this.versionCode = versionCode
         this.versionName = versionName
 
@@ -63,6 +63,8 @@ android {
         getByName("release") {
             if (getReleaseSigningConfig().exists()) {
                 signingConfig = signingConfigs.getByName("release")
+            } else {
+                signingConfig = signingConfigs.getByName("debug")
             }
             isMinifyEnabled = true
             isShrinkResources = true
@@ -98,7 +100,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.6"
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
     packaging {
         resources {

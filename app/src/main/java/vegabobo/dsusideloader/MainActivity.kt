@@ -8,15 +8,21 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.core.view.WindowCompat
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import com.topjohnwu.superuser.Shell
 import com.topjohnwu.superuser.ipc.RootService
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import kotlinx.coroutines.flow.map
 import org.lsposed.hiddenapibypass.HiddenApiBypass
 import rikka.shizuku.Shizuku
 import rikka.shizuku.ShizukuProvider
 import vegabobo.dsusideloader.model.Session
+import vegabobo.dsusideloader.preferences.AppPrefs
 import vegabobo.dsusideloader.service.PrivilegedProvider
 import vegabobo.dsusideloader.service.PrivilegedRootService
 import vegabobo.dsusideloader.service.PrivilegedService
@@ -31,6 +37,9 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
 
     @Inject
     lateinit var session: Session
+
+    @Inject
+    lateinit var dataStore: DataStore<Preferences>
 
     private val tag = this.javaClass.simpleName
 
@@ -134,7 +143,11 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-            DSUHelperTheme {
+            val themeStyle by dataStore.data.map {
+                it[androidx.datastore.preferences.core.stringPreferencesKey(AppPrefs.THEME_STYLE)] ?: "dynamic"
+            }.collectAsState(initial = "dynamic")
+
+            DSUHelperTheme(themeStyle = themeStyle) {
                 Navigation()
             }
         }

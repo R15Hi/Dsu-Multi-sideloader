@@ -4,22 +4,19 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import kotlin.system.exitProcess
 import kotlinx.coroutines.flow.collectLatest
-import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.cards.DsuInfoCard
 import vegabobo.dsusideloader.ui.cards.ImageSizeCard
+import vegabobo.dsusideloader.ui.cards.StorageInfoCard
 import vegabobo.dsusideloader.ui.cards.UserdataCard
 import vegabobo.dsusideloader.ui.cards.installation.InstallationCard
 import vegabobo.dsusideloader.ui.cards.warnings.GrantingPermissionCard
@@ -66,13 +63,12 @@ fun Home(
 
     ApplicationScreen(
         modifier = Modifier.padding(start = 10.dp, end = 10.dp),
+        enableDefaultScrollBehavior = true,
         verticalArrangement = Arrangement.spacedBy(8.dp),
         topBar = {
             TopBar(
-                barTitle = stringResource(id = R.string.app_name),
-                icon = Icons.Outlined.Settings,
+                barTitle = "Multi-Dsu Manager",
                 scrollBehavior = it,
-                onClickIcon = { navigate(Destinations.Preferences) },
             )
         },
         content = {
@@ -123,8 +119,12 @@ fun Home(
                     onClickRebootToDynOS = { homeViewModel.onClickRebootToDynOS() },
                     onClickViewLogs = { homeViewModel.showLogsWarning() },
                     onClickViewCommands = { navigate(Destinations.ADBInstallation) },
+                    onClickBackupAndHide = { homeViewModel.onClickBackupAndHide() },
                     minPercentageOfFreeStorage = homeViewModel.allocPercentageInt.toString(),
                 )
+
+                StorageInfoCard()
+
                 UserdataCard(
                     isEnabled = uiState.isInstalling(),
                     uiState = uiState.userDataCard,

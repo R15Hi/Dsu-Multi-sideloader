@@ -111,24 +111,34 @@ class DSUInstaller(
         partitionSize: Long,
         readOnly: Boolean = false,
     ) {
-        val job = Job()
-        CoroutineScope(Dispatchers.IO + job).launch {
-            createNewPartition(partition, partitionSize, readOnly)
-            job.complete()
-        }
-        publishProgress(0L, partitionSize, partition)
         var prevInstalledSize = 0L
-        while (job.isActive) {
-            val installedSize = installationProgress.bytes_processed
-            if (installedSize > prevInstalledSize + Constants.MIN_PROGRESS_TO_PUBLISH) {
-                prevInstalledSize = installedSize
-                publishProgress(installedSize, partitionSize, partition)
+        val job = Job()
+        try {
+            CoroutineScope(Dispatchers.IO + job).launch {
+                try {
+                    createNewPartition(partition, partitionSize, readOnly)
+                } catch (e: Exception) {
+                    Log.e(tag, "Exception creating writable partition", e)
+                }
+                job.complete()
             }
-            runBlocking { delay(100) }
-        }
-        if (!closePartition()) {
-            Log.e(tag, "Failed to install $partition partition")
-            onInstallationError(InstallationStep.ERROR_CREATE_PARTITION, partition)
+            publishProgress(0L, partitionSize, partition)
+            while (job.isActive) {
+                val installedSize = installationProgress.bytes_processed
+                if (installedSize > prevInstalledSize + Constants.MIN_PROGRESS_TO_PUBLISH) {
+                    prevInstalledSize = installedSize
+                    publishProgress(installedSize, partitionSize, partition)
+                }
+                runBlocking { delay(100) }
+            }
+            if (!closePartition()) {
+                Log.e(tag, "Failed to install $partition partition")
+                onInstallationError(InstallationStep.ERROR_CREATE_PARTITION, partition)
+                return
+            }
+        } catch (e: Exception) {
+            Log.e(tag, "Exception during writable partition", e)
+            onInstallationError(InstallationStep.ERROR_CREATE_PARTITION, "Error: ${e.message}")
             return
         }
 
@@ -153,37 +163,54 @@ class DSUInstaller(
         )
         val partitionSize = if (sis.unsparseSize != -1L) sis.unsparseSize else uncompressedSize
         onCreatePartition(partition)
-        createNewPartition(partition, partitionSize, readOnly)
-        onInstallationStepUpdate(InstallationStep.INSTALLING_ROOTED)
-        SharedMemory.create("dsu_buffer_$partition", Constants.SHARED_MEM_SIZE)
-            .use { sharedMemory ->
-                MappedMemoryBuffer(sharedMemory.mapReadWrite()).use { mappedBuffer ->
-                    val fdDup = getFdDup(sharedMemory)
-                    setAshmem(fdDup, sharedMemory.size.toLong())
-                    publishProgress(0L, partitionSize, partition)
-                    var installedSize: Long = 0
-                    val readBuffer = ByteArray(sharedMemory.size)
-                    val buffer = mappedBuffer.mBuffer
-                    var numBytesRead: Int
-                    while (0 < sis.read(readBuffer, 0, readBuffer.size)
-                            .also { numBytesRead = it }
-                    ) {
-                        if (installationJob.isCancelled) {
-                            return
-                        }
-                        buffer!!.position(0)
-                        buffer.put(readBuffer, 0, numBytesRead)
-                        submitFromAshmem(numBytesRead.toLong())
-                        installedSize += numBytesRead.toLong()
-                        publishProgress(installedSize, partitionSize, partition)
-                    }
-                    publishProgress(partitionSize, partitionSize, partition)
-                }
-            }
+        try {
+            createNewPartition(partition, partitionSize, readOnly)
+        } catch (e: Exception) {
+            Log.e(tag, "Exception creating partition $partition", e)
+            onInstallationError(InstallationStep.ERROR_CREATE_PARTITION, "Error: ${e.message}")
+            return
+        }
 
-        if (!closePartition()) {
-            Log.d(tag, "Failed to install $partition partition")
-            onInstallationError(InstallationStep.ERROR_CREATE_PARTITION, partition)
+        if (installationJob.isCancelled) {
+            return
+        }
+
+        onInstallationStepUpdate(InstallationStep.INSTALLING_ROOTED)
+        try {
+            SharedMemory.create("dsu_buffer_$partition", Constants.SHARED_MEM_SIZE)
+                .use { sharedMemory ->
+                    MappedMemoryBuffer(sharedMemory.mapReadWrite()).use { mappedBuffer ->
+                        val fdDup = getFdDup(sharedMemory)
+                        setAshmem(fdDup, sharedMemory.size.toLong())
+                        publishProgress(0L, partitionSize, partition)
+                        var installedSize: Long = 0
+                        val readBuffer = ByteArray(sharedMemory.size)
+                        val buffer = mappedBuffer.mBuffer
+                        var numBytesRead: Int
+                        while (0 < sis.read(readBuffer, 0, readBuffer.size)
+                                .also { numBytesRead = it }
+                        ) {
+                            if (installationJob.isCancelled) {
+                                return
+                            }
+                            buffer!!.position(0)
+                            buffer.put(readBuffer, 0, numBytesRead)
+                            submitFromAshmem(numBytesRead.toLong())
+                            installedSize += numBytesRead.toLong()
+                            publishProgress(installedSize, partitionSize, partition)
+                        }
+                        publishProgress(partitionSize, partitionSize, partition)
+                    }
+                }
+
+            if (!closePartition()) {
+                Log.d(tag, "Failed to install $partition partition")
+                onInstallationError(InstallationStep.ERROR_CREATE_PARTITION, partition)
+                return
+            }
+        } catch (e: Exception) {
+            Log.e(tag, "Exception during partition processing", e)
+            onInstallationError(InstallationStep.ERROR_CREATE_PARTITION, "Error: ${e.message}")
             return
         }
         Log.d(
@@ -228,8 +255,18 @@ class DSUInstaller(
             return
         }
         forceStopDSU()
-        startInstallation(Constants.DEFAULT_SLOT)
+
+        if (!startInstallation(Constants.DEFAULT_SLOT)) {
+            Log.e(tag, "startInstallation(\"dsu\") returned false")
+            onInstallationError(InstallationStep.ERROR_CREATE_PARTITION, "DSU slot")
+            return
+        }
+
         installWritablePartition("userdata", userdataSize)
+        if (installationJob.isCancelled) {
+            return
+        }
+
         when (dsuInstallation.type) {
             Type.SINGLE_SYSTEM_IMAGE -> {
                 installImage(

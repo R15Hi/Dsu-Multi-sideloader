@@ -1,6 +1,7 @@
 package vegabobo.dsusideloader.ui.components
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -26,11 +27,11 @@ fun Dialog(
     cancelText: String = "",
     onClickConfirm: () -> Unit = {},
     onClickCancel: () -> Unit = {},
-    content: @Composable () -> Unit = {},
+    content: @Composable ColumnScope.() -> Unit = {},
 ) {
     AlertDialog(
         modifier = modifier,
-        icon = { Icon(icon, "icon") },
+        icon = { Icon(icon, "icon", tint = androidx.compose.material3.MaterialTheme.colorScheme.primary) },
         onDismissRequest = onClickCancel,
         confirmButton = {
             if (confirmText.isNotEmpty()) {

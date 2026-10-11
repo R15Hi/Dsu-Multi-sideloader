@@ -1,0 +1,7 @@
+id=dsu_sideloader
+name=DSU Sideloader
+version=2.03
+versionCode=8
+author=VegaBobo
+description=System mode for DSU Sideloader
+updateJson=https://raw.githubusercontent.com/VegaBobo/DSU-Sideloader/master/other/module_updater/updater_module_gsid.json
