@@ -26,6 +26,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
@@ -35,7 +36,8 @@ import kotlinx.coroutines.launch
 fun CustomBottomSheet(
     modifier: Modifier = Modifier,
     title: String,
-    icon: ImageVector,
+    icon: ImageVector? = null,
+    iconPainter: Painter? = null,
     onDismiss: () -> Unit = {},
     content: @Composable ColumnScope.(hideSheet: suspend () -> Unit) -> Unit,
 ) {
@@ -74,12 +76,24 @@ fun CustomBottomSheet(
         coroutineScope.launch { sheetState.hide() }
     }
 
+    if (sheetState.isVisible) {
+        vegabobo.dsusideloader.ui.components.frostedglass.ApplyWindowBlurEffect(blurRadius = 28.dp)
+    }
+
+    val isGlassy = MaterialTheme.colorScheme.background.alpha < 1f
+    val sheetBg = if (isGlassy) {
+        androidx.compose.ui.graphics.Color(0xF0181A2A)
+    } else {
+        MaterialTheme.colorScheme.surface
+    }
+
     ModalBottomSheetLayout(
         sheetState = sheetState,
         sheetContent = {
             BottomSheetContent(
                 title = title,
                 icon = icon,
+                iconPainter = iconPainter,
             ) {
                 val insets = WindowInsets
                     .systemBars
@@ -96,8 +110,9 @@ fun CustomBottomSheet(
             }
         },
         modifier = modifier.fillMaxSize(),
-        sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-        sheetBackgroundColor = MaterialTheme.colorScheme.background,
+        sheetShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+        sheetBackgroundColor = sheetBg,
+        sheetContentColor = MaterialTheme.colorScheme.onSurface,
     ) {}
 
     // block touch on any part of screen

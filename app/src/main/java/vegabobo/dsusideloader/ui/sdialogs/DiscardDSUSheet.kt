@@ -1,8 +1,7 @@
 package vegabobo.dsusideloader.ui.sdialogs
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.DeleteForever
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.components.DialogLikeBottomSheet
@@ -14,7 +13,7 @@ fun DiscardDSUSheet(
 ) {
     DialogLikeBottomSheet(
         title = stringResource(id = R.string.discard_dsu_question),
-        icon = Icons.Outlined.DeleteForever,
+        iconPainter = painterResource(id = R.drawable.ic_discard),
         text = stringResource(id = R.string.dsu_already_installed_warning),
         confirmText = stringResource(id = R.string.yes),
         cancelText = stringResource(id = R.string.cancel),

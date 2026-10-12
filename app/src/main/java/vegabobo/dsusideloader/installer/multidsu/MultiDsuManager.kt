@@ -26,7 +26,14 @@ object MultiDsuManager {
     private const val GSI_META = "/metadata/gsi/dsu"
 
     fun hasRoot(): Boolean {
-        return Shell.getShell().isRoot
+        if (Shell.isAppGrantedRoot() == false) return false
+        val cached = Shell.getCachedShell()
+        if (cached != null) return cached.isRoot
+        return try {
+            Shell.getShell().isRoot
+        } catch (_: Throwable) {
+            false
+        }
     }
 
     /**
@@ -193,13 +200,11 @@ object MultiDsuManager {
         val dirs = result.out.map { it.trim() }.filter { it.isNotEmpty() }.distinct()
 
         for (dir in dirs) {
-            // Get size in human readable format (e.g. 5.1G)
-            val sizeResult = Shell.cmd("du -sh $DATA_SAFE_HAVEN/$dir 2>/dev/null | awk '{print $1}'").exec()
-            val size = if (sizeResult.isSuccess && sizeResult.out.isNotEmpty()) sizeResult.out.first().trim() else "Unknown size"
-
-            // Get modification date (last backed up / booted)
-            val statResult = Shell.cmd("stat -c %y $DATA_SAFE_HAVEN/$dir 2>/dev/null | cut -d'.' -f1").exec()
-            val date = if (statResult.isSuccess && statResult.out.isNotEmpty()) statResult.out.first().trim() else "Unknown date"
+            val combinedResult = Shell.cmd(
+                "du -sh $DATA_SAFE_HAVEN/$dir 2>/dev/null | awk '{print \$1}'; stat -c %y $DATA_SAFE_HAVEN/$dir 2>/dev/null | cut -d'.' -f1",
+            ).exec()
+            val size = combinedResult.out.getOrNull(0)?.trim()?.ifEmpty { "Unknown size" } ?: "Unknown size"
+            val date = combinedResult.out.getOrNull(1)?.trim()?.ifEmpty { "Unknown date" } ?: "Unknown date"
 
             backups.add(BackedUpDsu(dir, size, date))
         }

@@ -29,47 +29,44 @@ data class MultiDsuUiState(
 @HiltViewModel
 class MultiDsuViewModel @Inject constructor(
     val application: Application,
+    val session: vegabobo.dsusideloader.model.Session,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(MultiDsuUiState())
+    private val _uiState = MutableStateFlow(MultiDsuUiState(hasRoot = session.isRoot()))
     val uiState: StateFlow<MultiDsuUiState> = _uiState.asStateFlow()
 
     init {
-        refreshState()
+        refreshState(showLoading = false)
     }
 
-    fun refreshState() {
+    fun refreshState(showLoading: Boolean = false) {
         viewModelScope.launch(Dispatchers.IO) {
-            _uiState.update { it.copy(isRefreshing = true) }
-            val hasRoot = MultiDsuManager.hasRoot()
-            if (hasRoot) {
-                val hasActive = MultiDsuManager.hasActiveDsu()
-                val activeName = if (hasActive) MultiDsuManager.getActiveDsuName() else ""
-
-                // Auto-stash logic: If not booted into the GSI, automatically stash it!
-                if (hasActive && activeName.isNotEmpty() && !vegabobo.dsusideloader.service.PrivilegedProvider.getService().isInUse) {
-                    android.util.Log.d("MultiDsu", "Auto-stashing previously restored DSU: $activeName")
-                    _uiState.update { it.copy(progressAction = "Auto-stashing $activeName...") }
-                    MultiDsuManager.backupCurrentDsu(activeName)
-                    // Refresh again after stashing
-                    refreshState()
-                    return@launch
+            try {
+                if (showLoading) {
+                    _uiState.update { it.copy(isRefreshing = true) }
                 }
+                val hasRoot = MultiDsuManager.hasRoot()
+                if (hasRoot) {
+                    val hasActive = MultiDsuManager.hasActiveDsu()
+                    val activeName = if (hasActive) MultiDsuManager.getActiveDsuName() else ""
+                    val backups = MultiDsuManager.listBackups()
 
-                val backups = MultiDsuManager.listBackups()
-
-                _uiState.update {
-                    it.copy(
-                        hasRoot = true,
-                        hasActiveDsu = hasActive,
-                        activeDsuName = activeName,
-                        backedUpDsus = backups,
-                        isRefreshing = false,
-                        progressAction = "",
-                    )
+                    _uiState.update {
+                        it.copy(
+                            hasRoot = true,
+                            hasActiveDsu = hasActive,
+                            activeDsuName = activeName,
+                            backedUpDsus = backups,
+                            isRefreshing = false,
+                            progressAction = "",
+                        )
+                    }
+                } else {
+                    _uiState.update { it.copy(hasRoot = false, isRefreshing = false) }
                 }
-            } else {
-                _uiState.update { it.copy(hasRoot = false, isRefreshing = false) }
+            } catch (e: Exception) {
+                android.util.Log.e("MultiDsu", "Failed to refresh state", e)
+                _uiState.update { it.copy(isRefreshing = false) }
             }
         }
     }

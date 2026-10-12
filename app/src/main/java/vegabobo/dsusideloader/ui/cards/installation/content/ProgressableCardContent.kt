@@ -30,7 +30,10 @@ fun ProgressableCardContent(
     onClickSecondButton: (() -> Unit)? = null,
     onClickThirdButton: (() -> Unit)? = null,
 ) {
-    Text(text = text)
+    Text(
+        text = text,
+        color = MaterialTheme.colorScheme.onSurface,
+    )
     AnimatedVisibility(visible = showProgressBar) {
         val progressBarModifier = Modifier
             .fillMaxWidth()
@@ -58,6 +61,7 @@ fun ProgressableCardContent(
             modifier = Modifier.fillMaxWidth(),
             textAlign = androidx.compose.ui.text.style.TextAlign.End,
             style = androidx.compose.material3.MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
     Spacer(modifier = Modifier.padding(top = 4.dp))

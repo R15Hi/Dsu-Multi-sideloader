@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Quantum Tesseract (4D Super Partition) In-App Circular Preview -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    
+    <!-- Background Pure White Circle -->
+    <path
+        android:pathData="M 54,0 A 54,54 0 1,1 53.9,0 Z"
+        android:fillColor="#FFFFFF" />
+
+    <!-- Quantum Tesseract Core Layer (Scaled to match MT Manager) -->
+    <group
+        android:scaleX="0.52"
+        android:scaleY="0.52"
+        android:pivotX="54"
+        android:pivotY="52"
+        android:translateY="2">
+        <!-- Isometric Top Face -->
+        <path
+            android:pathData="M 54,16 L 86,34 L 54,52 L 22,34 Z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:startX="22"
+                    android:startY="16"
+                    android:endX="86"
+                    android:endY="52"
+                    android:type="linear">
+                    <item android:offset="0.0" android:color="#00F0FF" />
+                    <item android:offset="1.0" android:color="#8B5CF6" />
+                </gradient>
+            </aapt:attr>
+        </path>
+        <!-- Isometric Left Face -->
+        <path
+            android:pathData="M 22,34 L 54,52 L 54,88 L 22,70 Z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:startX="22"
+                    android:startY="34"
+                    android:endX="54"
+                    android:endY="88"
+                    android:type="linear">
+                    <item android:offset="0.0" android:color="#00F0FF" />
+                    <item android:offset="1.0" android:color="#3B82F6" />
+                </gradient>
+            </aapt:attr>
+        </path>
+        <!-- Isometric Right Face -->
+        <path
+            android:pathData="M 54,52 L 86,34 L 86,70 L 54,88 Z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:startX="54"
+                    android:startY="34"
+                    android:endX="86"
+                    android:endY="88"
+                    android:type="linear">
+                    <item android:offset="0.0" android:color="#00F0FF" />
+                    <item android:offset="1.0" android:color="#8B5CF6" />
+                </gradient>
+            </aapt:attr>
+        </path>
+        <!-- Inner Isometric Edges -->
+        <path
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="2.4"
+            android:strokeLineJoin="round"
+            android:strokeLineCap="round"
+            android:pathData="M 22,34 L 54,16 L 86,34 M 54,16 L 54,52" />
+    </group>
+</vector>

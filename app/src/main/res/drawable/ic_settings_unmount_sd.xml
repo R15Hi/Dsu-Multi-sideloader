@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generated from DSU Multi-sideloader Colorful Suite -->
+<!-- Implemented in: ui/screen/settings/SettingsScreen.kt:124 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    
+    <!-- Background Squircle with Vibrant Gradient -->
+    <path android:pathData="M 0,21 C 0,9.24 9.24,0 21,0 L 75,0 C 86.76,0 96,9.24 96,21 L 96,75 C 96,86.76 86.76,96 75,96 L 21,96 C 9.24,96 0,86.76 0,75 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="0"
+                android:startY="0"
+                android:endX="96"
+                android:endY="96">
+                <item android:offset="0.0" android:color="#00B09B" />
+                <item android:offset="0.5" android:color="#96C93D" />
+                <item android:offset="1.0" android:color="#00DFD8" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- White Center Glyph -->
+    <path android:pathData="M 32 20 L 58 20 C 62 20 66 24 66 28 L 66 72 C 66 76 62 80 58 80 L 32 80 C 28 80 24 76 24 72 L 24 28 L 32 20 Z"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="5"
+        android:strokeLineJoin="round"
+    />
+    <path android:pathData="M 34.0,28.0 L 34.0,38.0"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+    />
+    <path android:pathData="M 42.0,28.0 L 42.0,38.0"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+    />
+    <path android:pathData="M 50.0,28.0 L 50.0,38.0"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+    />
+    <path android:pathData="M 40 64 L 48 54 L 56 64"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+    />
+    <path android:pathData="M 38.0,70.0 L 58.0,70.0"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="4.5"
+        android:strokeLineCap="round"
+    />
+</vector>

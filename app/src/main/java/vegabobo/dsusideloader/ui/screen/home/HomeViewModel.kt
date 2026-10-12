@@ -111,16 +111,6 @@ class HomeViewModel @Inject constructor(
                     return@run
                 }
                 if (isInstalled) {
-                    val activeName = vegabobo.dsusideloader.installer.multidsu.MultiDsuManager.getActiveDsuName()
-                    if (activeName.isNotEmpty()) {
-                        updateInstallationCard { it.copy(installationStep = InstallationStep.DSU_ALREADY_INSTALLED) }
-                        viewModelScope.launch(kotlinx.coroutines.Dispatchers.IO) {
-                            android.util.Log.d("MultiDsu", "Auto-stashing previously restored DSU: $activeName")
-                            vegabobo.dsusideloader.installer.multidsu.MultiDsuManager.backupCurrentDsu(activeName)
-                            resetInstallationCard()
-                        }
-                        return@run
-                    }
                     updateInstallationCard { it.copy(installationStep = InstallationStep.DSU_ALREADY_INSTALLED) }
                     return@run
                 }
@@ -497,11 +487,16 @@ class HomeViewModel @Inject constructor(
             return
         }
 
+        val fileSize = storageManager.getFilesizeFromUri(uri)
         session.userSelection.selectedFileName = filename
         session.userSelection.selectedFileUri = uri
         updateInstallationCard {
             it.copy(
                 text = filename,
+                fileName = filename,
+                fileSize = fileSize,
+                bytesTotal = fileSize,
+                bytesProcessed = 0L,
                 isTextFieldEnabled = false,
                 isInstallable = true,
             )
@@ -544,12 +539,22 @@ class HomeViewModel @Inject constructor(
     //
 
     private fun onRootInstallationSuccess() {
-        updateInstallationCard { it.copy(installationStep = InstallationStep.INSTALL_SUCCESS_REBOOT_DYN_OS) }
+        updateInstallationCard {
+            it.copy(
+                installationStep = InstallationStep.INSTALL_SUCCESS_REBOOT_DYN_OS,
+                installationProgress = 1.0f,
+            )
+        }
         InstallationNotificationHelper.showComplete(application)
     }
 
     private fun onInstallationSuccess() {
-        updateInstallationCard { it.copy(installationStep = InstallationStep.INSTALL_SUCCESS) }
+        updateInstallationCard {
+            it.copy(
+                installationStep = InstallationStep.INSTALL_SUCCESS_REBOOT_DYN_OS,
+                installationProgress = 1.0f,
+            )
+        }
         InstallationNotificationHelper.showComplete(application)
     }
 
@@ -561,7 +566,15 @@ class HomeViewModel @Inject constructor(
         updateInstallationCard { it.copy(installationStep = step) }
 
     private fun onPreparationProgressUpdate(progress: Float) {
-        updateInstallationCard { it.copy(installationProgress = progress) }
+        val total = uiState.value.installationCard.fileSize
+        val processed = if (total > 0L) (progress * total).toLong() else 0L
+        updateInstallationCard {
+            it.copy(
+                installationProgress = progress,
+                bytesProcessed = processed,
+                bytesTotal = total,
+            )
+        }
         InstallationNotificationHelper.updateProgress(
             application,
             application.getString(R.string.notif_extracting),
@@ -581,9 +594,19 @@ class HomeViewModel @Inject constructor(
             }
         }
 
-    private fun onInstallationProgressUpdate(progress: Float, partition: String) {
+    private fun onInstallationProgressUpdate(
+        progress: Float,
+        partition: String,
+        bytesProcessed: Long = 0L,
+        bytesTotal: Long = 0L,
+    ) {
         updateInstallationCard {
-            it.copy(currentPartitionText = partition, installationProgress = progress)
+            it.copy(
+                currentPartitionText = partition,
+                installationProgress = progress,
+                bytesProcessed = if (bytesProcessed > 0L) bytesProcessed else it.bytesProcessed,
+                bytesTotal = if (bytesTotal > 0L) bytesTotal else it.bytesTotal,
+            )
         }
         InstallationNotificationHelper.updateProgress(
             application,
@@ -599,4 +622,10 @@ class HomeViewModel @Inject constructor(
                 currentPartitionText = partition,
             )
         }
+
+    fun updateThemeStyle(theme: String) {
+        viewModelScope.launch {
+            updateStringPref(AppPrefs.THEME_STYLE, theme) {}
+        }
+    }
 }

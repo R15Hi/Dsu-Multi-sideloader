@@ -1,16 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <group android:scaleX="0.5" android:scaleY="0.5" android:pivotX="54" android:pivotY="54">
+    <group
+        android:scaleX="0.52"
+        android:scaleY="0.52"
+        android:pivotX="54"
+        android:pivotY="52"
+        android:translateY="2">
+        <!-- Isometric Top Face -->
         <path
-            android:fillColor="#1A73E8"
-            android:pathData="
-            M 30,22 C 30,17.6 33.6,14 38,14 L 70,14 C 74.4,14 78,17.6 78,22 L 78,86 C 78,90.4 74.4,94 70,94 L 38,94 C 33.6,94 30,90.4 30,86 Z
-            M 38,18 C 35.8,18 34,19.8 34,22 L 34,86 C 34,88.2 35.8,90 38,90 L 70,90 C 72.2,90 74,88.2 74,86 L 74,22 C 74,19.8 72.2,18 70,18 Z
-            M 54,66 L 38.5,57.1 L 36,59 L 54,70 L 72,59 L 69.5,57.1 Z
-            M 54,62 L 69.5,53 L 72,51 L 54,40 L 36,51 L 38.5,53 Z
-            " />
+            android:pathData="M 54,16 L 86,34 L 54,52 L 22,34 Z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:startX="22"
+                    android:startY="16"
+                    android:endX="86"
+                    android:endY="52"
+                    android:type="linear">
+                    <item android:offset="0.0" android:color="#00F0FF" />
+                    <item android:offset="1.0" android:color="#8B5CF6" />
+                </gradient>
+            </aapt:attr>
+        </path>
+        <!-- Isometric Left Face -->
+        <path
+            android:pathData="M 22,34 L 54,52 L 54,88 L 22,70 Z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:startX="22"
+                    android:startY="34"
+                    android:endX="54"
+                    android:endY="88"
+                    android:type="linear">
+                    <item android:offset="0.0" android:color="#00F0FF" />
+                    <item android:offset="1.0" android:color="#3B82F6" />
+                </gradient>
+            </aapt:attr>
+        </path>
+        <!-- Isometric Right Face -->
+        <path
+            android:pathData="M 54,52 L 86,34 L 86,70 L 54,88 Z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:startX="54"
+                    android:startY="34"
+                    android:endX="86"
+                    android:endY="88"
+                    android:type="linear">
+                    <item android:offset="0.0" android:color="#00F0FF" />
+                    <item android:offset="1.0" android:color="#8B5CF6" />
+                </gradient>
+            </aapt:attr>
+        </path>
+        <!-- Inner Isometric Edges -->
+        <path
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="2.4"
+            android:strokeLineJoin="round"
+            android:strokeLineCap="round"
+            android:pathData="M 22,34 L 54,16 L 86,34 M 54,16 L 54,52" />
     </group>
 </vector>

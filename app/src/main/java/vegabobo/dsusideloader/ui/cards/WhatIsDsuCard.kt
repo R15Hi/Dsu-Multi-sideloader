@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import vegabobo.dsusideloader.R
@@ -50,7 +51,7 @@ fun DsuInfoCard(
         ) {
             CardTitle(
                 cardTitle = stringResource(id = R.string.what_is_dsu),
-                icon = Icons.Outlined.Info,
+                iconPainter = painterResource(id = R.drawable.ic_settings_info),
                 modifier = Modifier.weight(1f),
             )
             Icon(
@@ -66,6 +67,7 @@ fun DsuInfoCard(
                 Text(
                     text = stringResource(id = R.string.what_is_dsu_description),
                     textAlign = androidx.compose.ui.text.style.TextAlign.Justify,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 8.dp),
                 )
                 Row(modifier = Modifier.padding(top = 6.dp)) {

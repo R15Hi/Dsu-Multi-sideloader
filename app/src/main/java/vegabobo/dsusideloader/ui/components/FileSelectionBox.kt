@@ -39,6 +39,9 @@ fun FileSelectionBox(
         shape = androidx.compose.foundation.shape.RoundedCornerShape(24.dp),
         colors = androidx.compose.material3.TextFieldDefaults.outlinedTextFieldColors(
             containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+            textColor = androidx.compose.material3.MaterialTheme.colorScheme.onSurface,
+            focusedLabelColor = androidx.compose.material3.MaterialTheme.colorScheme.primary,
+            unfocusedLabelColor = androidx.compose.material3.MaterialTheme.colorScheme.onSurfaceVariant,
         ),
     )
 }

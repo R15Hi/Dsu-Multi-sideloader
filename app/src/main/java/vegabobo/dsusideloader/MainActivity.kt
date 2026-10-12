@@ -8,8 +8,11 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -148,7 +151,17 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
             }.collectAsState(initial = "dynamic")
 
             DSUHelperTheme(themeStyle = themeStyle) {
-                Navigation()
+                androidx.compose.material3.Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = if (themeStyle == "glassy") androidx.compose.ui.graphics.Color.Transparent else androidx.compose.material3.MaterialTheme.colorScheme.background,
+                ) {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        if (themeStyle == "glassy") {
+                            vegabobo.dsusideloader.ui.components.frostedglass.WallpaperBackdrop()
+                        }
+                        Navigation()
+                    }
+                }
             }
         }
 

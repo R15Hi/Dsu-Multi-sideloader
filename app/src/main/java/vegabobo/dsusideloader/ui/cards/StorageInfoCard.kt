@@ -20,6 +20,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -28,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.components.CardBox
 import vegabobo.dsusideloader.util.StorageUtils
 
@@ -44,22 +47,26 @@ fun StorageInfoCard(
 
     CardBox(
         modifier = modifier,
+        cardTitle = "Storage",
+        iconPainter = painterResource(id = R.drawable.ic_storage),
         addPadding = true,
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Bottom,
             ) {
                 Text(
                     text = buildAnnotatedString {
-                        withStyle(style = SpanStyle(fontSize = 42.sp, fontWeight = FontWeight.Bold)) {
+                        withStyle(style = SpanStyle(fontSize = 36.sp, fontWeight = FontWeight.Bold)) {
                             append("${storageStats.usedGb}")
                         }
-                        withStyle(style = SpanStyle(fontSize = 18.sp, fontWeight = FontWeight.Medium)) {
+                        withStyle(style = SpanStyle(fontSize = 16.sp, fontWeight = FontWeight.Medium)) {
                             append(" GB used")
                         }
                     },
@@ -75,17 +82,19 @@ fun StorageInfoCard(
                 )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             LinearProgressIndicator(
                 progress = storageStats.progress,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(14.dp)
-                    .clip(RoundedCornerShape(8.dp)),
-                color = MaterialTheme.colorScheme.primary,
-                trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                    .height(8.dp)
+                    .clip(RoundedCornerShape(4.dp)),
+                color = Color(0xFF10B981),
+                trackColor = if (MaterialTheme.colorScheme.background.alpha < 1f) Color(0x28FFFFFF) else MaterialTheme.colorScheme.surfaceVariant,
             )
+
+            Spacer(modifier = Modifier.height(6.dp))
         }
     }
 }

@@ -45,7 +45,7 @@ class DSUInstaller(
     private val dsuInstallation: DSUInstallationSource,
     private var installationJob: Job = Job(),
     private val onInstallationError: (error: InstallationStep, errorInfo: String) -> Unit,
-    private val onInstallationProgressUpdate: (progress: Float, partition: String) -> Unit,
+    private val onInstallationProgressUpdate: (progress: Float, partition: String, bytesProcessed: Long, bytesTotal: Long) -> Unit,
     private val onCreatePartition: (partition: String) -> Unit,
     private val onInstallationStepUpdate: (step: InstallationStep) -> Unit,
     private val onInstallationSuccess: () -> Unit,
@@ -103,7 +103,7 @@ class DSUInstaller(
         if (totalBytes != 0L && bytesRead != 0L) {
             progress = (bytesRead.toFloat() / totalBytes.toFloat())
         }
-        onInstallationProgressUpdate(progress, partition)
+        onInstallationProgressUpdate(progress, partition, bytesRead, totalBytes)
     }
 
     private fun installWritablePartition(

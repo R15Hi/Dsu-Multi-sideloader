@@ -19,22 +19,24 @@ private val DarkColorScheme = darkColorScheme(
     primary = Blue80,
     secondary = BlueGrey80,
     tertiary = Purplish80,
+    background = Color(0xFF13131A),
+    surface = Color(0xFF1B1B24),
+    surfaceVariant = Color(0xFF242432),
+    onBackground = Color(0xFFE8E8F0),
+    onSurface = Color(0xFFE8E8F0),
+    onSurfaceVariant = Color(0xFFC0C0D0),
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = Blue40,
     secondary = BlueGrey40,
     tertiary = Purplish40,
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    background = Color(0xFFF6F7FA),
+    surface = Color(0xFFFFFFFF),
+    surfaceVariant = Color(0xFFEEF0F6),
+    onBackground = Color(0xFF16181F),
+    onSurface = Color(0xFF16181F),
+    onSurfaceVariant = Color(0xFF4A4D58),
 )
 
 @Composable
@@ -51,7 +53,7 @@ fun DSUHelperTheme(
 
     val context = LocalContext.current
     var colorScheme = when {
-        (themeStyle == "dynamic" || themeStyle == "light" || themeStyle == "dark") && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+        themeStyle == "dynamic" && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             if (isDark) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
         isDark -> DarkColorScheme
@@ -61,22 +63,55 @@ fun DSUHelperTheme(
     if (themeStyle == "amoled") {
         colorScheme = colorScheme.copy(
             background = Color.Black,
-            surface = Color.Black,
-            surfaceVariant = Color(0xFF121212),
+            surface = Color(0xFF0C0C10),
+            surfaceVariant = Color(0xFF16161C),
+            onBackground = Color.White,
+            onSurface = Color.White,
+            onSurfaceVariant = Color(0xFFA8A8B8),
         )
     } else if (themeStyle == "glassy") {
         colorScheme = colorScheme.copy(
-            background = Color(0xFF0D0D14),
-            surface = Color(0x991E1E28),
-            surfaceVariant = Color(0x662D2D3A),
+            primary = Color(0xFF70B8FF),
+            primaryContainer = Color(0x593B82F6),
+            secondary = Color(0xFF80DEEA),
+            secondaryContainer = Color(0x4D00BCD4),
+            background = Color(0x18000000),
+            surface = Color(0x80141824),
+            surfaceVariant = Color(0x59263044),
+            onBackground = Color(0xFFF2F5FA),
+            onSurface = Color(0xFFF2F5FA),
+            onSurfaceVariant = Color(0xFFD2D8E4),
+            outline = Color(0x4DFFFFFF),
         )
     }
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
-            val window = (view.context as Activity).window
+            val activity = view.context as Activity
+            val window = activity.window
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !isDark
             WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = !isDark
+            val params = window.attributes
+            if (themeStyle == "glassy") {
+                vegabobo.dsusideloader.ui.components.frostedglass.WallpaperHelper.applyTranslucentWindow(activity)
+            } else {
+                params.flags = params.flags and android.view.WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER.inv()
+                window.attributes = params
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    try {
+                        window.setBackgroundBlurRadius(0)
+                    } catch (_: Throwable) {}
+                }
+                val isAmoled = themeStyle == "amoled"
+                val bgColor = if (isAmoled) {
+                    android.graphics.Color.BLACK
+                } else if (isDark) {
+                    android.graphics.Color.parseColor("#1C1B1F")
+                } else {
+                    android.graphics.Color.parseColor("#FFFBFE")
+                }
+                window.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(bgColor))
+            }
         }
     }
 

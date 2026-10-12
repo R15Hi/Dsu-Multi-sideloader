@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generated from DSU Multi-sideloader Colorful Suite -->
+<!-- Implemented in: ui/sdialogs/CancelSheet.kt:17 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    
+    <!-- Background Squircle with Vibrant Gradient -->
+    <path android:pathData="M 0,21 C 0,9.24 9.24,0 21,0 L 75,0 C 86.76,0 96,9.24 96,21 L 96,75 C 96,86.76 86.76,96 75,96 L 21,96 C 9.24,96 0,86.76 0,75 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="0"
+                android:startY="0"
+                android:endX="96"
+                android:endY="96">
+                <item android:offset="0.0" android:color="#3A0E08" />
+                <item android:offset="0.5" android:color="#382504" />
+                <item android:offset="1.0" android:color="#331203" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Tinted Center Glyph -->
+    <path android:pathData="M 16.0,48.0 a 32.0,32.0 0 1,0 64.0,0 a 32.0,32.0 0 1,0 -64.0,0"
+        android:strokeColor="#F87171"
+        android:strokeWidth="5.5"
+    />
+    <path android:pathData="M 36.0,36.0 L 60.0,60.0"
+        android:strokeColor="#F87171"
+        android:strokeWidth="6"
+        android:strokeLineCap="round"
+    />
+    <path android:pathData="M 60.0,36.0 L 36.0,60.0"
+        android:strokeColor="#F87171"
+        android:strokeWidth="6"
+        android:strokeLineCap="round"
+    />
+</vector>

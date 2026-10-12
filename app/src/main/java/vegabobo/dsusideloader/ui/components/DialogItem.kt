@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -18,20 +19,36 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun DialogItem(
-    icon: ImageVector,
+    modifier: Modifier = Modifier,
+    icon: ImageVector? = null,
+    iconPainter: Painter? = null,
     title: String,
     text: String,
     textColor: Color = Color.Unspecified,
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Icon(
-            modifier = Modifier
-                .size(32.dp)
-                .padding(end = 6.dp),
-            tint = MaterialTheme.colorScheme.primary,
-            imageVector = icon,
-            contentDescription = "Icon",
-        )
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        if (iconPainter != null) {
+            Icon(
+                modifier = Modifier
+                    .size(28.dp)
+                    .padding(end = 6.dp),
+                tint = Color.Unspecified,
+                painter = iconPainter,
+                contentDescription = "Icon",
+            )
+        } else if (icon != null) {
+            Icon(
+                modifier = Modifier
+                    .size(32.dp)
+                    .padding(end = 6.dp),
+                tint = MaterialTheme.colorScheme.primary,
+                imageVector = icon,
+                contentDescription = "Icon",
+            )
+        }
         Column(Modifier.padding(4.dp)) {
             Text(
                 text = title,
@@ -46,4 +63,20 @@ fun DialogItem(
             )
         }
     }
+}
+
+@Composable
+fun DialogItem(
+    icon: ImageVector,
+    title: String,
+    text: String,
+    textColor: Color = Color.Unspecified,
+) {
+    DialogItem(
+        icon = icon,
+        iconPainter = null,
+        title = title,
+        text = text,
+        textColor = textColor,
+    )
 }

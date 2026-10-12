@@ -44,8 +44,10 @@ class SettingsViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            val themeStyle = readStringPref(AppPrefs.THEME_STYLE, "dynamic")
-            _uiState.update { it.copy(themeStyle = themeStyle) }
+            dataStore.data.collect { preferences ->
+                val themeStyle = preferences[androidx.datastore.preferences.core.stringPreferencesKey(AppPrefs.THEME_STYLE)] ?: "dynamic"
+                _uiState.update { it.copy(themeStyle = themeStyle) }
+            }
         }
     }
 

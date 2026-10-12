@@ -2,7 +2,6 @@ package vegabobo.dsusideloader.ui.components.buttons
 
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -38,7 +37,7 @@ fun ActionButton(
         ) {
             Text(
                 text = text,
-                color = colorText ?: MaterialTheme.colorScheme.surface,
+                color = colorText ?: Color.Unspecified,
             )
             content()
         }

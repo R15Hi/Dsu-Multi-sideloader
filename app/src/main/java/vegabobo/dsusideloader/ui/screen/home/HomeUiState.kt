@@ -12,6 +12,10 @@ data class InstallationCardState(
     val isProgressBarIndeterminate: Boolean = false,
     val installationProgress: Float = 0F,
     val currentPartitionText: String = "",
+    val fileName: String = "",
+    val fileSize: Long = 0L,
+    val bytesProcessed: Long = 0L,
+    val bytesTotal: Long = 0L,
 )
 
 data class UserDataCardState(

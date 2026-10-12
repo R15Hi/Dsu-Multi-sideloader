@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generated from DSU Multi-sideloader Colorful Suite -->
+<!-- Implemented in: ui/sdialogs/ConfirmInstallationSheet.kt:30 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    
+    <!-- Background Squircle with Vibrant Gradient -->
+    <path android:pathData="M 0,21 C 0,9.24 9.24,0 21,0 L 75,0 C 86.76,0 96,9.24 96,21 L 96,75 C 96,86.76 86.76,96 75,96 L 21,96 C 9.24,96 0,86.76 0,75 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="0"
+                android:startY="0"
+                android:endX="96"
+                android:endY="96">
+                <item android:offset="0.0" android:color="#1A103C" />
+                <item android:offset="0.5" android:color="#0E2A5C" />
+                <item android:offset="1.0" android:color="#0A3F4E" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Tinted Center Glyph -->
+    <path android:pathData="M 36.0,16.0 L 60.0,16.0 a 8.0,8.0 0 0,1 8.0,8.0 L 68.0,72.0 a 8.0,8.0 0 0,1 -8.0,8.0 L 36.0,80.0 a 8.0,8.0 0 0,1 -8.0,-8.0 L 28.0,24.0 a 8.0,8.0 0 0,1 8.0,-8.0 Z"
+        android:strokeColor="#38BDF8"
+        android:strokeWidth="5"
+        android:strokeAlpha="0.4"
+    />
+    <path android:pathData="M 44.0,22.0 L 52.0,22.0"
+        android:strokeColor="#38BDF8"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:strokeAlpha="0.6"
+    />
+    <path android:pathData="M 48 30 L 48 54 M 38 46 L 48 56 L 58 46"
+        android:strokeColor="#38BDF8"
+        android:strokeWidth="6"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+    />
+    <path android:pathData="M 36 64 L 60 64"
+        android:strokeColor="#38BDF8"
+        android:strokeWidth="5"
+        android:strokeLineCap="round"
+    />
+</vector>

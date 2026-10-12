@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -25,7 +26,9 @@ import vegabobo.dsusideloader.util.collectAsStateWithLifecycle
 
 object AboutLinks {
     const val CONTRIBUTORS_URL = "https://github.com/VegaBobo/DSU-Sideloader/graphs/contributors"
-    const val REPOSITORY_URL = "https://github.com/VegaBobo/DSU-Sideloader"
+    const val REPOSITORY_URL = "https://github.com/R15Hi/Dsu-Multi-sideloader"
+    const val ORIGINAL_REPO_URL = "https://github.com/VegaBobo/DSU-Sideloader"
+    const val R15HI_GITHUB = "https://github.com/R15Hi"
     const val WSTXDA_GITHUB = "https://github.com/WSTxda"
     const val VEGABOBO_GITHUB = "https://github.com/VegaBobo"
 }
@@ -90,8 +93,15 @@ fun AboutScreen(
         ) {
             PreferenceItem(
                 title = stringResource(id = R.string.github_repo),
-                description = stringResource(id = R.string.github_repo_description),
+                description = "R15Hi/Dsu-Multi-sideloader",
+                iconPainter = painterResource(id = R.drawable.ic_file),
                 onClick = { uriHandler.openUri(AboutLinks.REPOSITORY_URL) },
+            )
+            PreferenceItem(
+                title = "Original DSU Sideloader",
+                description = "VegaBobo/DSU-Sideloader",
+                iconPainter = painterResource(id = R.drawable.ic_settings_info),
+                onClick = { uriHandler.openUri(AboutLinks.ORIGINAL_REPO_URL) },
             )
             PreferenceItem(
                 title = stringResource(id = R.string.libraries_title),
@@ -106,6 +116,11 @@ fun AboutScreen(
         SimpleCard(
             addPadding = false,
         ) {
+            PreferenceItem(
+                title = "R15Hi",
+                description = "Multi-DSU developer & maintainer",
+                onClick = { uriHandler.openUri(AboutLinks.R15HI_GITHUB) },
+            )
             PreferenceItem(
                 title = "VegaBobo",
                 description = stringResource(id = R.string.role_developer),

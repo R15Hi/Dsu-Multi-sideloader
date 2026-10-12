@@ -1,10 +1,10 @@
 package vegabobo.dsusideloader.ui.cards.installation
 
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.preparation.InstallationStep
+import vegabobo.dsusideloader.ui.cards.installation.content.CircularInstallationProgress
 import vegabobo.dsusideloader.ui.cards.installation.content.NotInstallingCardContent
 import vegabobo.dsusideloader.ui.cards.installation.content.ProgressableCardContent
 import vegabobo.dsusideloader.ui.screen.home.InstallationCardState
@@ -12,8 +12,8 @@ import vegabobo.dsusideloader.ui.screen.home.InstallationCardState
 @Composable
 fun InstallationCardStep(
     uiState: InstallationCardState,
-    textFieldInteraction: MutableInteractionSource,
     minPercentageOfFreeStorage: String = "40",
+    onClickSelectFile: () -> Unit = {},
     onClickClear: () -> Unit,
     onClickInstall: () -> Unit,
     onClickRetryInstallation: () -> Unit,
@@ -30,11 +30,12 @@ fun InstallationCardStep(
     when (uiState.installationStep) {
         InstallationStep.NOT_INSTALLING ->
             NotInstallingCardContent(
-                textFieldInteraction = textFieldInteraction,
                 uiState = uiState,
+                onClickSelectFile = onClickSelectFile,
                 onClickClear = onClickClear,
                 onClickInstall = onClickInstall,
             )
+
         InstallationStep.DSU_ALREADY_INSTALLED ->
             ProgressableCardContent(
                 text = stringResource(R.string.dsu_already_installed),
@@ -43,58 +44,35 @@ fun InstallationCardStep(
                 textSecondButton = stringResource(id = R.string.discard),
                 onClickSecondButton = onClickDiscardDsu,
             )
+
         InstallationStep.DSU_ALREADY_RUNNING_DYN_OS ->
             ProgressableCardContent(
                 text = stringResource(R.string.already_running_dsu),
             )
-        InstallationStep.PROCESSING ->
-            ProgressableCardContent(
-                text = stringResource(R.string.processing),
-                textSecondButton = stringResource(id = R.string.cancel),
-                onClickSecondButton = onClickCancelInstallation,
-                showProgressBar = true,
-                isIndeterminate = true,
+
+        // Active extraction, preparation, installation, and completion steps
+        // render the large glowing circular progress component
+        InstallationStep.PROCESSING,
+        InstallationStep.COPYING_FILE,
+        InstallationStep.DECOMPRESSING_XZ,
+        InstallationStep.COMPRESSING_TO_GZ,
+        InstallationStep.DECOMPRESSING_GZIP,
+        InstallationStep.EXTRACTING_FILE,
+        InstallationStep.PROCESSING_LOG_READABLE,
+        InstallationStep.INSTALLING,
+        InstallationStep.INSTALLING_ROOTED,
+        InstallationStep.CREATING_PARTITION,
+        InstallationStep.INSTALL_SUCCESS,
+        InstallationStep.INSTALL_SUCCESS_REBOOT_DYN_OS,
+        ->
+            CircularInstallationProgress(
+                uiState = uiState,
+                onClickCancel = onClickCancelInstallation,
+                onClickRebootToDynOS = onClickRebootToDynOS,
+                onClickDiscardDsu = onClickDiscardDsu,
+                onClickBackupAndHide = onClickBackupAndHide,
             )
-        InstallationStep.COPYING_FILE ->
-            ProgressableCardContent(
-                text = stringResource(R.string.copying_file),
-                textSecondButton = stringResource(id = R.string.cancel),
-                onClickSecondButton = onClickCancelInstallation,
-                showProgressBar = true,
-                progress = uiState.installationProgress,
-            )
-        InstallationStep.DECOMPRESSING_XZ ->
-            ProgressableCardContent(
-                text = stringResource(R.string.decompressing_xz),
-                textSecondButton = stringResource(id = R.string.cancel),
-                onClickSecondButton = onClickCancelInstallation,
-                showProgressBar = true,
-                progress = uiState.installationProgress,
-            )
-        InstallationStep.COMPRESSING_TO_GZ ->
-            ProgressableCardContent(
-                text = stringResource(R.string.compressing_to_gz),
-                textSecondButton = stringResource(id = R.string.cancel),
-                onClickSecondButton = onClickCancelInstallation,
-                showProgressBar = true,
-                progress = uiState.installationProgress,
-            )
-        InstallationStep.DECOMPRESSING_GZIP ->
-            ProgressableCardContent(
-                text = stringResource(R.string.extracting_file),
-                textSecondButton = stringResource(id = R.string.cancel),
-                onClickSecondButton = onClickCancelInstallation,
-                showProgressBar = true,
-                progress = uiState.installationProgress,
-            )
-        InstallationStep.EXTRACTING_FILE ->
-            ProgressableCardContent(
-                text = stringResource(R.string.extracting_file),
-                textSecondButton = stringResource(id = R.string.cancel),
-                onClickSecondButton = onClickCancelInstallation,
-                showProgressBar = true,
-                progress = uiState.installationProgress,
-            )
+
         InstallationStep.DISCARD_CURRENT_GSI -> {
             ProgressableCardContent(
                 text = stringResource(R.string.discard_dsu_otg),
@@ -105,6 +83,7 @@ fun InstallationCardStep(
                 progress = uiState.installationProgress,
             )
         }
+
         InstallationStep.WAITING_USER_CONFIRMATION -> {
             ProgressableCardContent(
                 text = stringResource(R.string.installation_prompt),
@@ -114,44 +93,7 @@ fun InstallationCardStep(
                 onClickSecondButton = onClickCancelInstallation,
             )
         }
-        InstallationStep.PROCESSING_LOG_READABLE ->
-            ProgressableCardContent(
-                text = stringResource(R.string.installing),
-                textFirstButton = stringResource(id = R.string.cancel),
-                onClickFirstButton = onClickCancelInstallation,
-                textSecondButton = stringResource(id = R.string.view_logs),
-                onClickSecondButton = onClickViewLogs,
-                showProgressBar = true,
-                isIndeterminate = true,
-            )
-        InstallationStep.INSTALLING -> {
-            ProgressableCardContent(
-                text = stringResource(R.string.installing_partition, uiState.currentPartitionText),
-                textFirstButton = stringResource(id = R.string.cancel),
-                onClickFirstButton = onClickCancelInstallation,
-                textSecondButton = stringResource(id = R.string.view_logs),
-                onClickSecondButton = onClickViewLogs,
-                showProgressBar = true,
-                progress = uiState.installationProgress,
-            )
-        }
-        InstallationStep.INSTALLING_ROOTED -> {
-            ProgressableCardContent(
-                text = stringResource(R.string.installing_partition, uiState.currentPartitionText),
-                textSecondButton = stringResource(id = R.string.cancel),
-                onClickSecondButton = onClickCancelInstallation,
-                showProgressBar = true,
-                progress = uiState.installationProgress,
-            )
-        }
-        InstallationStep.CREATING_PARTITION ->
-            ProgressableCardContent(
-                text = stringResource(R.string.creating_partition, uiState.currentPartitionText),
-                textSecondButton = stringResource(id = R.string.cancel),
-                onClickSecondButton = onClickCancelInstallation,
-                showProgressBar = true,
-                progress = uiState.installationProgress,
-            )
+
         InstallationStep.ERROR ->
             ProgressableCardContent(
                 text = stringResource(R.string.unknown_error, uiState.errorText),
@@ -160,6 +102,7 @@ fun InstallationCardStep(
                 textSecondButton = stringResource(id = R.string.mreturn),
                 onClickSecondButton = onClickClear,
             )
+
         InstallationStep.ERROR_CANCELED ->
             ProgressableCardContent(
                 text = stringResource(R.string.installation_canceled),
@@ -168,6 +111,7 @@ fun InstallationCardStep(
                 textSecondButton = stringResource(id = R.string.mreturn),
                 onClickSecondButton = onClickClear,
             )
+
         InstallationStep.ERROR_REQUIRES_DISCARD_DSU ->
             ProgressableCardContent(
                 text = stringResource(R.string.discard_dsu_otg),
@@ -176,18 +120,21 @@ fun InstallationCardStep(
                 textSecondButton = stringResource(id = R.string.cancel),
                 onClickSecondButton = onClickCancelInstallation,
             )
+
         InstallationStep.ERROR_ALREADY_RUNNING_DYN_OS ->
             ProgressableCardContent(
                 text = stringResource(R.string.already_running_dsu),
                 textSecondButton = stringResource(id = R.string.mreturn),
                 onClickSecondButton = onClickClear,
             )
+
         InstallationStep.ERROR_CREATE_PARTITION ->
             ProgressableCardContent(
                 text = stringResource(R.string.failed_create_partition, uiState.errorText),
                 textSecondButton = stringResource(id = R.string.mreturn),
                 onClickSecondButton = onClickClear,
             )
+
         InstallationStep.ERROR_EXTERNAL_SDCARD_ALLOC ->
             ProgressableCardContent(
                 text = stringResource(
@@ -199,6 +146,7 @@ fun InstallationCardStep(
                 textSecondButton = stringResource(id = R.string.cancel),
                 onClickSecondButton = onClickCancelInstallation,
             )
+
         InstallationStep.ERROR_NO_AVAIL_STORAGE ->
             ProgressableCardContent(
                 text = stringResource(R.string.storage_error_description, minPercentageOfFreeStorage),
@@ -207,6 +155,7 @@ fun InstallationCardStep(
                 textSecondButton = stringResource(id = R.string.cancel),
                 onClickSecondButton = onClickCancelInstallation,
             )
+
         InstallationStep.ERROR_F2FS_WRONG_PATH ->
             ProgressableCardContent(
                 text = stringResource(
@@ -218,6 +167,7 @@ fun InstallationCardStep(
                 textSecondButton = stringResource(id = R.string.clear),
                 onClickSecondButton = onClickClear,
             )
+
         InstallationStep.ERROR_EXTENTS ->
             ProgressableCardContent(
                 text = stringResource(R.string.extents_error_description),
@@ -226,6 +176,7 @@ fun InstallationCardStep(
                 textSecondButton = stringResource(id = R.string.mreturn),
                 onClickSecondButton = onClickClear,
             )
+
         InstallationStep.ERROR_SELINUX ->
             ProgressableCardContent(
                 text = stringResource(R.string.selinux_error_description),
@@ -234,6 +185,7 @@ fun InstallationCardStep(
                 textSecondButton = stringResource(id = R.string.cancel),
                 onClickSecondButton = onClickCancelInstallation,
             )
+
         InstallationStep.ERROR_SELINUX_ROOTLESS ->
             ProgressableCardContent(
                 text = stringResource(R.string.selinux_error_description),
@@ -242,22 +194,7 @@ fun InstallationCardStep(
                 textSecondButton = stringResource(id = R.string.mreturn),
                 onClickSecondButton = onClickClear,
             )
-        InstallationStep.INSTALL_SUCCESS ->
-            ProgressableCardContent(
-                text = stringResource(R.string.installation_finished_rootless),
-                textSecondButton = stringResource(id = R.string.mreturn),
-                onClickSecondButton = onClickClear,
-            )
-        InstallationStep.INSTALL_SUCCESS_REBOOT_DYN_OS ->
-            ProgressableCardContent(
-                text = stringResource(R.string.installation_finished),
-                textFirstButton = stringResource(id = R.string.reboot_into_dsu),
-                onClickFirstButton = onClickRebootToDynOS,
-                textSecondButton = stringResource(id = R.string.discard),
-                onClickSecondButton = onClickDiscardDsu,
-                textThirdButton = "Backup & Hide",
-                onClickThirdButton = onClickBackupAndHide,
-            )
+
         InstallationStep.REQUIRES_ADB_CMD_TO_CONTINUE ->
             ProgressableCardContent(
                 text = stringResource(R.string.require_adb_cmd_to_continue),

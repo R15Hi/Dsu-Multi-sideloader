@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -12,7 +13,8 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 @Composable
 fun DialogLikeBottomSheet(
     modifier: Modifier = Modifier,
-    icon: ImageVector,
+    icon: ImageVector? = null,
+    iconPainter: Painter? = null,
     title: String = "",
     text: String = "",
     confirmText: String = "",
@@ -31,6 +33,7 @@ fun DialogLikeBottomSheet(
     Dialog(
         modifier = modifier,
         icon = icon,
+        iconPainter = iconPainter,
         title = title,
         text = text,
         confirmText = confirmText,

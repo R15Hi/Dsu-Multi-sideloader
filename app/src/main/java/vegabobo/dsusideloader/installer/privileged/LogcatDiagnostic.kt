@@ -8,7 +8,7 @@ import vegabobo.dsusideloader.util.CmdRunner
 class LogcatDiagnostic(
     private val onInstallationError: (error: InstallationStep, errorInfo: String) -> Unit,
     private val onStepUpdate: (step: InstallationStep) -> Unit,
-    private val onInstallationProgressUpdate: (progress: Float, partition: String) -> Unit,
+    private val onInstallationProgressUpdate: (progress: Float, partition: String, bytesProcessed: Long, bytesTotal: Long) -> Unit,
     private val onInstallationSuccess: () -> Unit,
     private val onLogLineReceived: () -> Unit,
 ) {
@@ -39,7 +39,7 @@ class LogcatDiagnostic(
 
             if (it.contains("DynamicSystemService") && it.contains("startInstallation")) {
                 onStepUpdate(InstallationStep.INSTALLING)
-                onInstallationProgressUpdate(0F, "userdata")
+                onInstallationProgressUpdate(0F, "userdata", 0L, 0L)
             }
 
             if (!isLogging.get()) {
@@ -148,11 +148,13 @@ class LogcatDiagnostic(
                         val partitionRgx = "(partition name: ([a-z+_]+))".toRegex()
 
                         val progressText = progressRgx.find(it)!!.groupValues[2].split("/")
-                        val progress = (progressText[0].toFloat() / progressText[1].toFloat())
+                        val bytesProcessed = progressText[0].toLongOrNull() ?: 0L
+                        val bytesTotal = progressText[1].toLongOrNull() ?: 0L
+                        val progress = if (bytesTotal > 0L) (bytesProcessed.toFloat() / bytesTotal.toFloat()) else 0F
 
                         val partitionText = partitionRgx.find(it)!!.groupValues[2]
 
-                        onInstallationProgressUpdate(progress, partitionText)
+                        onInstallationProgressUpdate(progress, partitionText, bytesProcessed, bytesTotal)
                     } catch (_: Exception) {
                         onStepUpdate(InstallationStep.PROCESSING_LOG_READABLE)
                     }

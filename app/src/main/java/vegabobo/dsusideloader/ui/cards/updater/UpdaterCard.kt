@@ -3,6 +3,7 @@ package vegabobo.dsusideloader.ui.cards.updater
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,7 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -66,40 +67,39 @@ fun UpdaterCard(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Surface(
+            Box(
                 modifier = Modifier
                     .padding(10.dp)
                     .padding(top = 16.dp),
-                color = MaterialTheme.colorScheme.inverseOnSurface,
+                contentAlignment = Alignment.Center,
             ) {
-                Box {
-                    val progressBarModifier = Modifier
-                        .size(100.dp)
-                        .align(Alignment.Center)
-                    if (isCheckingForUpdates()) {
-                        CircularProgressIndicator(modifier = progressBarModifier)
-                    }
-                    if (uiState.isDownloading) {
-                        CircularProgressIndicator(
-                            progress = uiState.progressBar,
-                            modifier = progressBarModifier,
-                        )
-                    }
-
-                    val selected = remember { mutableStateOf(false) }
-                    val scale = animateFloatAsState(if (selected.value) 0.75f else 1f)
-                    selected.value = isDownloading()
-                    Image(
-                        modifier = Modifier
-                            .size(96.dp)
-                            .scale(scale.value)
-                            .clip(CircleShape)
-                            .align(Alignment.Center)
-                            .clickable { onClickImage() },
-                        painter = painterResource(id = R.drawable.app_icon_mini),
-                        contentDescription = "App icon",
+                val progressBarModifier = Modifier
+                    .size(108.dp)
+                    .align(Alignment.Center)
+                if (isCheckingForUpdates()) {
+                    CircularProgressIndicator(modifier = progressBarModifier)
+                }
+                if (uiState.isDownloading) {
+                    CircularProgressIndicator(
+                        progress = uiState.progressBar,
+                        modifier = progressBarModifier,
                     )
                 }
+
+                val selected = remember { mutableStateOf(false) }
+                val scale = animateFloatAsState(if (selected.value) 0.75f else 1f)
+                selected.value = isDownloading()
+                Image(
+                    modifier = Modifier
+                        .size(96.dp)
+                        .scale(scale.value)
+                        .clip(CircleShape)
+                        .border(1.dp, Color(0x18000000), CircleShape)
+                        .align(Alignment.Center)
+                        .clickable { onClickImage() },
+                    painter = painterResource(id = R.drawable.ic_launcher_circle),
+                    contentDescription = "App icon",
+                )
             }
             Text(
                 text = stringResource(id = R.string.app_name),

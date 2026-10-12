@@ -34,6 +34,7 @@ fun SimpleCard(
         if (text.isNotEmpty()) {
             Text(
                 text = text,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = if (justifyText) TextAlign.Justify else TextAlign.Start,
                 modifier = if (textScrollable) Modifier.verticalScroll(scroll) else Modifier,
             )

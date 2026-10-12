@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generated from DSU Multi-sideloader Colorful Suite -->
+<!-- Implemented in: ui/screen/settings/SettingsScreen.kt:243 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    
+    <!-- Background Squircle with Vibrant Gradient -->
+    <path android:pathData="M 0,21 C 0,9.24 9.24,0 21,0 L 75,0 C 86.76,0 96,9.24 96,21 L 96,75 C 96,86.76 86.76,96 75,96 L 21,96 C 9.24,96 0,86.76 0,75 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="0"
+                android:startY="0"
+                android:endX="96"
+                android:endY="96">
+                <item android:offset="0.0" android:color="#3A1604" />
+                <item android:offset="0.5" android:color="#451B06" />
+                <item android:offset="1.0" android:color="#331203" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Tinted Center Glyph -->
+    <path android:pathData="M 48 20 L 78 74 C 80 77 78 80 74 80 L 22 80 C 18 80 16 77 18 74 L 48 20 Z"
+        android:strokeColor="#FDBA74"
+        android:strokeWidth="5"
+        android:strokeLineJoin="round"
+    />
+    <path android:pathData="M 48.0,38.0 L 48.0,56.0"
+        android:strokeColor="#FDBA74"
+        android:strokeWidth="5"
+        android:strokeLineCap="round"
+    />
+    <path android:pathData="M 44.5,66.0 a 3.5,3.5 0 1,0 7.0,0 a 3.5,3.5 0 1,0 -7.0,0"
+        android:fillColor="#FDBA74"
+    />
+</vector>
