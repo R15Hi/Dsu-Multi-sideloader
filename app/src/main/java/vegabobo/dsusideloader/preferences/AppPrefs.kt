@@ -9,7 +9,7 @@ object AppPrefs {
      * check AboutViewModel init
      */
     const val UPDATE_CHECK_URL =
-        "https://raw.githubusercontent.com/VegaBobo/DSU-Sideloader/master/other/updater.json"
+        "https://raw.githubusercontent.com/R15Hi/Dsu-Multi-sideloader/master/other/updater.json"
     const val AUTHOR_SIGN_DIGEST = "0da046eb480972124e2fe2251ebc5b19ea9e13d9"
     const val USER_PREFERENCES = "user_preferences"
     const val BOOTLOADER_UNLOCKED_WARNING = "bootloader_unlocked_warning"
