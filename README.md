@@ -1,6 +1,6 @@
 # DSU Multi-Sideloader
 
-A powerful fork of the original DSU Sideloader that brings multi-DSU management and a completely revamped user experience to seamlessly install and manage Generic System Images (GSIs) via Android's DSU feature.
+A powerful, modernized fork of the original DSU Sideloader that brings **Multi-DSU slot management**, an integrated **GSI Hub** community catalog, and a **Liquid Glass** aesthetic overhaul to seamlessly install, manage, and switch between Generic System Images (GSIs) via Android's Dynamic System Updates (DSU) feature.
 
 <div align="center">
   <img src="https://github.com/user-attachments/assets/a42e9488-c533-4355-9ec1-f7ab79975de6" alt="Preview 1" width="24%"/>
@@ -12,79 +12,103 @@ A powerful fork of the original DSU Sideloader that brings multi-DSU management 
   <img src="https://github.com/user-attachments/assets/b1c0d77c-6b9a-4b83-a665-d657146b7766" alt="Preview 7" width="24%"/>
 </div>
 
-## ✨ What's New in This Version
+---
 
-This version introduces significant core architecture and UI/UX improvements over the original app:
+## ✨ Features
 
-### Multi-DSU Manager
-The app now features a **Multi-DSU Manager** tab, allowing you to manage multiple Dynamic System Updates seamlessly:
-- **View Installations**: Easily refresh and view all currently configured DSUs on your device.
-- **Restore & Boot**: Restore previous backups and initiate the boot process into your chosen DSU directly from the app.
-- **Auto-stashing**: Android natively only allows a single DSU. This app overcomes this (Requires Root) by safely stashing the active DSU's block maps and metadata to a backup folder. This tricks Android into thinking the DSU slot is empty, allowing you to install a brand new GSI. If you reboot back into your original host system, the app automatically stashes your restored DSU in the background to keep the slot free!
+### 🔄 Multi-DSU Slot Manager
+Android natively limits dynamic systems to a single DSU slot. DSU Multi-Sideloader bypasses this restriction:
+- **Slot Inspection**: Easily scan, inspect, and track all configured DSU slots and partitions on your device.
+- **Root Auto-Stashing**: Safely stashes the active DSU's block maps and metadata to a backup folder, freeing the DSU slot so you can install and test multiple GSIs simultaneously.
+- **Backup & Instant Switching**: Restore previous backups and boot into any installed DSU slot directly from the app.
 
-### UI/UX & Core Architecture Improvements
-- **Core Architecture Overhaul**: Modernized app architecture with a redesigned Settings UI and improved Magisk module integration.
-- **Centered Dialogs & Blurs**: All settings and theme selection dialogs now pop up in the center of the screen with a modern, blurred, and dimmed background.
-- **Dynamic Header Text**: The top header text seamlessly centers itself when scrolling for an elegant scrolling experience.
-- **Clean Layout**: Removed the extra icon from the header completely to provide a cleaner layout without visual duplication.
-- **Colorful Icons**: Replaced plain icons with colorful, vibrant vector icons in the home screen cards.
-- **Redesigned App Icon**: Refreshed the launcher icon by increasing the width and proportions of the phone element.
-- **Refresh State Indicator**: Added a centered visual loading indicator to the Multi-DSU tab so you always know when your installations are being scanned or refreshed.
+### 🌐 GSI Hub
+An integrated catalog for discovering and installing Generic System Images directly from community maintainers:
+- **Live Maintainer Feeds**: Direct integration with active GSI releases from popular maintainers (AndyYan, ponces, phhusson, MisterZTR, Nazim, and more).
+- **ROM Recognition**: Automatic detection and brand logos for major ROM families (AOSP, Pixel Experience, LineageOS, crDroid, Evolution X, etc.).
+- **Changelog Inspection**: Built-in release notes and changelog viewer with smooth collapsible previews.
+- **Atomic One-Tap Installation**: Direct download and installation workflow with automatic cancellation cleanup to ensure partially downloaded files never enter installation.
+- **Custom Repositories**: Flexibility to add your own favorite GSI release repositories or remove them with a long-press.
+
+### 💎 Liquid Glass & Modern UI Design
+A completely refreshed interface combining visual excellence with fluid navigation:
+- **Liquid Glass Navigation Bar**: Translucent floating capsule with multi-pass wallpaper backdrop blur, dynamic contrast curve, 25% tint wash, and specular rim reflection.
+- **Multiple Theme Styles**: Choose between Dynamic (Material You), Dark, Light, AMOLED Pitch Black, and Glassy mode.
+- **Centered Dialogs & Blurs**: Fluid dialog sheets with frosted backdrop blurs and centered layout hierarchy.
+- **Dual-Mode Vector Icons**: Vibrant custom squircle vector iconography designed for both dark and light modes.
+
+---
+
+## 📱 Navigation Tabs
+
+The app is organized into four dedicated tabs:
+1. **Installed**: Manage local GSI installations, customize partition userdata sizes, and track installation progress.
+2. **Multi DSU**: Inspect slots, stash active dynamic systems, and switch between installed DSU slots.
+3. **GSI Hub**: Discover, inspect changelogs, download, and install community GSIs directly.
+4. **Settings**: Theme selection, operation mode configuration, and developer diagnostics.
+
+---
 
 ## 📋 Requirements
-- Android 10 or higher
-- Unlocked Bootloader
-- Device with Dynamic Partitions
-- A GSI you want to use!
+- **Android 10 or higher**
+- **Unlocked Bootloader**
+- **Device with Dynamic Partitions**
+- **Compatible GSI**: Ensure the GSI architecture matches your device (`arm64`, `arm`, `x86_64`) and VNDK requirements (`ab` / system-as-root).
 
-**Remember to use GSIs compatible with your architecture and VNDK implementation.**
+---
 
 ## 📥 Downloads
 
-You can download the latest APK from the [Releases Section](https://github.com/R15Hi/Dsu-Multi-sideloader/releases/latest) of this repository.
+Get the latest installable packages from the [Releases Section](https://github.com/R15Hi/Dsu-Multi-sideloader/releases/latest):
+- **`app-release.apk`**: Installable Android application package.
+- **`module_DSU_Sideloader.zip`**: Magisk module for system mode & patched `gsid` binaries.
+
+---
 
 ## 🚀 How to use?
-1. Install the app.
-2. When opening for the first time, give read/write permission to a folder, create a new folder and allow access. *(This folder will be used to store temporary files, like extracted GSIs)*.
-3. Select a GSI to install (accepted formats: gz, xz, img, and zip DSU packages).
-4. Customize your installation (e.g., changing userdata size for dynamic systems).
-5. Tap on "Install".
-6. Wait until it finishes (it may take some time).
-7. Once finished:
-	- If the built-in installer is enabled, no extra step is required.
-	- On rooted/system/shizuku mode (with built-in installer disabled), the DSU screen will appear prompting you to confirm installation. Check your notifications to start it.
-	- On ADB mode, run the prompted adb command to start the installation.
-8. Once dynamic system is ready, you can boot it through notifications, or directly from the app.
 
-## ⚙️ Operation modes
+1. Install and launch the app.
+2. Grant read/write storage access to a working directory for temporary files (extracted images).
+3. Select a GSI:
+   - **From GSI Hub**: Browse maintainer releases, check the changelog, and tap **Download & Install**.
+   - **From Local Storage**: Select an image file (`.gz`, `.xz`, `.img`, or `.zip` DSU package) on the **Installed** tab.
+4. Customize your installation settings (such as userdata partition allocation).
+5. Tap **Install** and wait for processing to finish.
+6. Boot into your dynamic system through the system notification or directly from the **Multi-DSU** tab!
 
-DSU Sideloader supports multiple operation modes. The best available mode is picked automatically:
+---
 
-1. **ADB**: Default mode. Requires adb command to invoke DSU system-app.
-2. **Shizuku**: No adb required. Supports tracking installation progress and diagnostics.
-3. **Root**: Supports all Shizuku features without special permissions. Allows direct DynamicSystem API usage and built-in DSU installer.
-4. **System mode**: Runs as a system-app (via Magisk module). Fixes common SELinux denials and includes custom gsid binary.
-5. **System/Root mode**: Combines all features of root and system operation modes.
+## ⚙️ Operation Modes
 
-### Recommendations
-- Non-rooted: **Shizuku** is a highly recommended operation mode.
-- Rooted: **Root** operation mode is more than enough for most people.
-- Having DSU issues?: Go with **System/Root**.
-- Use with Stock ROMs for the best compatibility.
+DSU Sideloader automatically chooses the best available operation mode:
 
-## ❓ Common questions
+| Mode | Root Required? | Description |
+| :--- | :---: | :--- |
+| **ADB** | ❌ No | Default fallback mode. Invokes DSU via standard ADB commands. |
+| **Shizuku** | ❌ No | No PC required. Communicates directly with system services with installation diagnostics. |
+| **Root** | ✔️ Yes | Direct DynamicSystem API access, multi-slot auto-stashing, and built-in installer. |
+| **System Mode** | ✔️ Yes (Magisk) | Runs as a system privileged app, bypassing SELinux denials with custom `gsid`. |
+| **System/Root** | ✔️ Yes | Combines all root capabilities with patched system binaries for maximum compatibility. |
 
-1. **DSU installation finishes with no errors, but device doesn't boot into installed DSU?**
-   - AVB might be preventing the boot. Try flashing disabled vbmeta.
-2. **Why can't I set a high userdata value?**
-   - Android limits allocation (max 40%). The custom gsid binary reduces this limitation to 20%.
-3. **Why does the "Unmount SD" option exist?**
-   - Allocating in SD cards isn't always supported and can cause errors. This enforces allocation in device storage.
-4. **Why does the built-in installer require root?**
-   - It uses Android's internal DynamicSystem API which is heavily restricted without root.
+---
 
-## 💖 Credits & Other
+## ❓ Frequently Asked Questions
+
+1. **DSU finishes installing but device doesn't boot into it?**
+   - Android Verified Boot (AVB) may be blocking custom GSIs. Flashing a disabled `vbmeta` image (`--disable-verity --disable-verification`) usually resolves this.
+2. **Why is the userdata allocation limited?**
+   - Stock Android caps DSU allocation to 40% of free storage. The bundled patched `gsid` module reduces this restriction to 20%.
+3. **Can I keep my host system data safe?**
+   - Yes! DSUs run completely isolated in dynamic partitions on your storage. Discarding or unstashing a DSU leaves your host system untouched.
+4. **How do I remove a custom repository from GSI Hub?**
+   - Tap and hold (long-press) on any maintainer's card in the GSI Hub tab to delete that repository feed.
+
+---
+
+## 💖 Credits & Acknowledgments
 
 - Based on the original [DSU-Sideloader](https://github.com/VegaBobo/DSU-Sideloader) by [VegaBobo](https://github.com/VegaBobo).
-- For translators, we now have a Crowdin, feel free to send your translations: [https://crowdin.com/translate/dsu-sideloader/](https://crowdin.com/translate/dsu-sideloader/).
-- App icon made by [WSTxda](https://github.com/WSTxda).
+- Multi-DSU subsystem, GSI Hub, and Liquid Glass UI overhaul by [R15Hi](https://github.com/R15Hi).
+- Launcher icon designed by [WSTxda](https://github.com/WSTxda).
+- Special thanks to all GSI maintainers (AndyYan, phhusson, ponces, MisterZTR, Nazim, and community creators) for keeping the Treble ecosystem vibrant.
+- Translations hosted on Crowdin: [crowdin.com/translate/dsu-sideloader](https://crowdin.com/translate/dsu-sideloader/).
