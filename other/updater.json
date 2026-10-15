@@ -1,7 +1,7 @@
 {
   "identifier":"dsu_sideloader",
-  "versionCode": 9,
-  "versionName": "2.10",
-  "apkUrl": "https://github.com/R15Hi/Dsu-Multi-sideloader/releases/download/v2.10/app-release.apk",
-  "changelogUrl": "https://github.com/R15Hi/Dsu-Multi-sideloader/releases/tag/v2.10"
+  "versionCode": 10,
+  "versionName": "2.20",
+  "apkUrl": "https://github.com/R15Hi/Dsu-Multi-sideloader/releases/download/v2.20/app-release.apk",
+  "changelogUrl": "https://github.com/R15Hi/Dsu-Multi-sideloader/releases/tag/v2.20"
 }

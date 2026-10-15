@@ -1,24 +1,28 @@
-### DSU Multi-Sideloader v2.10 (9)
+### DSU Multi-Sideloader v2.20 (10)
 
-- **Multi-DSU Manager**: Complete multi-slot DSU management subsystem
-  - Slot inspection and live DSU partition mapping
-  - Seamless backup, restore, slot switching, and discard capabilities
-  - Root auto-stashing: Safely stash active DSU block maps & metadata to bypass Android single-DSU limitation
-  - Built-in root diagnostics & Treble metadata inspector
-- **Modern UI Redesign & Frosted Glass**:
-  - Liquid glassmorphism (`GlassSurface` and `GlassButton`)
-  - Dynamic window and live wallpaper blurs with backdrop rendering
-  - 5 theme modes: Follow System, Light, Dark, AMOLED Pitch Black, and Translucent Blur
-  - Fluid 120Hz-tuned pager navigation and centered dialog sheets
-- **Colorful Icon System**:
-  - 48 custom dual-mode squircle vector icons across all cards, screens, and dialogs
-  - Vibrant day and night tinting
-- **Revamped Installation Experience**:
-  - Circular progress indicator with pulse animation and stage counters
-  - Real-time log inspection sheet and partition progress visualization
-- **Quick Settings Tiles**:
-  - Dedicated QS tiles to reboot directly into installed DSU or discard active DSU instances
-- **Magisk Module**:
-  - Bundled patched `gsid` binaries for Android 10-13 (API 29-33) with full SELinux policies
+- **GSI Hub Subsystem**:
+  - Dedicated "GSI Hub" tab in bottom navigation for browsing and installing active Generic System Images
+  - Automatic discovery, indexing, and live fetching of active community GSI GitHub releases
+  - Chronological release sorting (latest to oldest) with human-readable release date and timestamps
+  - ROM brand logos & classifications (AOSP, Pixel Experience, LineageOS, crDroid, Evolution X, and more)
+  - Interactive collapsible changelog inspection with smooth zero-jank accordion animation
+  - One-tap "Download & Install" with cancellation safety (incomplete downloads are never loaded into installation)
+  - Custom repository management with tap-and-hold deletion
+  - Full-featured maintainer credits section honoring GSI developers
 
-Read more at: https://github.com/R15Hi/Dsu-Multi-sideloader/releases/tag/v2.10
+- **Liquid Glass Navigation Bar Overhaul**:
+  - Reverse-engineered frosted glass rendering pipeline inspired by Liquid Glass architecture
+  - Precision mathematical calibration:
+    - Glass Blur: 55 radius multi-pass blur in `WallpaperHelper` (converging to true Gaussian blur)
+    - Contrast Boost: 40 (Skia ColorMatrix dynamic contrast curve with 1.20x expansion)
+    - Panel Colour Opacity: 25% (0.25f alpha) primary accent tint over smoked frosted acrylic backing
+    - Shadow Strength: 12.dp elevation with 12% ambient shadow and 24% spot shadow
+    - Hairline Specular Rim: 1.2.dp border with top highlight reflection sheen
+  - Universal theme compatibility across Dynamic, Dark, Light, AMOLED, and Glassy modes
+
+- **UI/UX Polishing**:
+  - Renamed primary tab from "Installation" to "Installed" for clarity
+  - Centered blur refresh animation matching Multi-DSU tab
+  - Optimized button layouts, chips, and typography across all screen resolutions
+
+Read more at: https://github.com/R15Hi/Dsu-Multi-sideloader/releases/tag/v2.20
