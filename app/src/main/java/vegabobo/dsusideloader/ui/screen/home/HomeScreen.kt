@@ -88,6 +88,13 @@ fun Home(
         }
     }
 
+    LaunchedEffect(homeViewModel.session.userSelection.selectedFileUri) {
+        val selectedUri = homeViewModel.session.userSelection.selectedFileUri
+        if (selectedUri != android.net.Uri.EMPTY) {
+            homeViewModel.onFileSelectionResult(selectedUri)
+        }
+    }
+
     ApplicationScreen(
         modifier = Modifier.padding(start = 10.dp, end = 10.dp),
         enableDefaultScrollBehavior = true,

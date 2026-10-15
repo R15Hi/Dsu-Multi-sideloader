@@ -92,13 +92,13 @@ fun FloatingBottomBar(
 
     var wallpaperBitmap by remember {
         mutableStateOf<android.graphics.Bitmap?>(
-            WallpaperHelper.getCachedWallpaper() ?: WallpaperHelper.getInitialFastBackdrop(context),
+            WallpaperHelper.getCachedWallpaper() ?: WallpaperHelper.getInitialFastBackdrop(context, blurRadius = 55),
         )
     }
 
     LaunchedEffect(isGlassy) {
         if (isGlassy) {
-            val blurred = WallpaperHelper.getBlurredWallpaper(context)
+            val blurred = WallpaperHelper.getBlurredWallpaper(context, blurRadius = 55)
             wallpaperBitmap = blurred
         }
     }
@@ -106,9 +106,9 @@ fun FloatingBottomBar(
     val pillBorderBrush = if (isGlassy) {
         Brush.verticalGradient(
             listOf(
-                Color(0x85FFFFFF),
-                Color(0x30FFFFFF),
-                Color(0x12FFFFFF),
+                Color.White.copy(alpha = 0.40f), // Top specular rim highlight
+                Color.White.copy(alpha = 0.18f), // Mid translucency
+                Color.White.copy(alpha = 0.08f), // Bottom subtle edge
             ),
         )
     } else {
@@ -122,16 +122,16 @@ fun FloatingBottomBar(
             .padding(horizontal = 24.dp, vertical = 10.dp),
         contentAlignment = Alignment.Center,
     ) {
-        // Floating iOS-inspired glass capsule pill (exact Glassy-Bottom-Navigation styling matching reference)
+        // Floating glass capsule pill (Liquid Glass "Frosted (with tint)" theme combination)
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(60.dp)
                 .shadow(
-                    elevation = if (isGlassy) 16.dp else 8.dp,
+                    elevation = 12.dp, // Shadow strength: 12
                     shape = CircleShape,
-                    spotColor = if (isGlassy) Color(0x60000000) else Color(0x30000000),
-                    ambientColor = Color(0x20000000),
+                    spotColor = if (isGlassy) Color.Black.copy(alpha = 0.24f) else Color(0x30000000), // 24% spot shadow
+                    ambientColor = if (isGlassy) Color.Black.copy(alpha = 0.12f) else Color(0x1F000000), // 12% ambient shadow
                 )
                 .clip(CircleShape)
                 .border(
@@ -141,10 +141,22 @@ fun FloatingBottomBar(
                 ),
         ) {
             if (isGlassy) {
-                // Layer 1: Real sampled blurred wallpaper backdrop slice
+                // Layer 1: Real sampled blurred wallpaper backdrop slice with Glass Blur = 55 and Contrast Boost = 40
                 val bmp = wallpaperBitmap
                 val blurPaint = remember {
-                    android.graphics.Paint(android.graphics.Paint.FILTER_BITMAP_FLAG)
+                    val contrastBoost = 1.20f // 40% Contrast Boost from Liquid Glass shader: (rgb - 0.5) * 1.20 + 0.5
+                    val t = (1f - contrastBoost) / 2f * 255f
+                    val contrastMatrix = android.graphics.ColorMatrix(
+                        floatArrayOf(
+                            contrastBoost, 0f, 0f, 0f, t,
+                            0f, contrastBoost, 0f, 0f, t,
+                            0f, 0f, contrastBoost, 0f, t,
+                            0f, 0f, 0f, 1f, 0f,
+                        ),
+                    )
+                    android.graphics.Paint(android.graphics.Paint.FILTER_BITMAP_FLAG).apply {
+                        colorFilter = android.graphics.ColorMatrixColorFilter(contrastMatrix)
+                    }
                 }
                 if (bmp != null && !bmp.isRecycled) {
                     androidx.compose.foundation.Canvas(
@@ -164,31 +176,53 @@ fun FloatingBottomBar(
                     }
                 }
 
-                // Layer 2: Authentic frosted acrylic wash (72-80% opacity dark smoked glass matching ref pic 2)
+                // Layer 2: Frosted Acrylic Base Diffusion Layer (smokes the background for depth and contrast)
+                val acrylicBase = if (isDark) {
+                    Brush.verticalGradient(
+                        listOf(
+                            Color(0x38101827),
+                            Color(0x450A0F1D),
+                        ),
+                    )
+                } else {
+                    Brush.verticalGradient(
+                        listOf(
+                            Color(0x35FFFFFF),
+                            Color(0x25F1F5F9),
+                        ),
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(acrylicBase),
+                )
+
+                // Layer 3: Panel Color Opacity 25 - Liquid Glass Tint Color mixed at 25% (0.25f) opacity
+                val tintColor = MaterialTheme.colorScheme.primary
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(
                             Brush.verticalGradient(
                                 listOf(
-                                    Color(0xB81A2234), // 72% translucent deep acrylic
-                                    Color(0xC8121928), // 78% obsidian diffusion
-                                    Color(0xCC0E1420), // 80% frosted base
+                                    tintColor.copy(alpha = 0.28f),
+                                    tintColor.copy(alpha = 0.22f),
                                 ),
                             ),
                         ),
                 )
 
-                // Layer 3: Top specular reflection sheen (light catching the top curved rim of the glass)
+                // Layer 4: Top Specular Rim Sheen (light catching the top curved rim of the glass)
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(28.dp)
+                        .height(26.dp)
                         .background(
                             Brush.verticalGradient(
                                 listOf(
-                                    Color(0x35FFFFFF),
-                                    Color(0x0CFFFFFF),
+                                    Color.White.copy(alpha = 0.28f),
+                                    Color.White.copy(alpha = 0.06f),
                                     Color.Transparent,
                                 ),
                             ),
@@ -210,9 +244,10 @@ fun FloatingBottomBar(
 
             val navItems = remember {
                 listOf(
-                    Triple(0, R.drawable.ic_home, "Installation"),
+                    Triple(0, R.drawable.ic_home, "Installed"),
                     Triple(1, R.drawable.ic_list, "Multi DSU"),
-                    Triple(2, R.drawable.ic_settings, "Settings"),
+                    Triple(2, R.drawable.ic_settings_new_releases, "GSI Hub"),
+                    Triple(3, R.drawable.ic_settings, "Settings"),
                 )
             }
 
@@ -244,9 +279,9 @@ fun FloatingBottomBar(
                     .fillMaxSize()
                     .padding(horizontal = 6.dp, vertical = 5.dp),
             ) {
-                val tabWidth = maxWidth / 3
+                val tabWidth = maxWidth / navItems.size
                 val selectedIndex by remember(pagerState) {
-                    derivedStateOf { pagerState.currentPage.coerceIn(0, 2) }
+                    derivedStateOf { pagerState.currentPage.coerceIn(0, navItems.size - 1) }
                 }
 
                 // Animated selected tab capsule (hardware-accelerated 1:1 real-time drag/scroll tracking)
@@ -255,7 +290,7 @@ fun FloatingBottomBar(
                         .fillMaxHeight()
                         .width(tabWidth)
                         .offset {
-                            val position = (pagerState.currentPage + pagerState.currentPageOffsetFraction).coerceIn(0f, 2f)
+                            val position = (pagerState.currentPage + pagerState.currentPageOffsetFraction).coerceIn(0f, (navItems.size - 1).toFloat())
                             val x = (tabWidth.toPx() * position).roundToInt()
                             IntOffset(x = x, y = 0)
                         }
@@ -352,6 +387,7 @@ fun FloatingBottomBar(
 @Composable
 fun TabsScreen(navigate: (String) -> Unit) {
     val pagerState = rememberPagerState(initialPage = 0)
+    val coroutineScope = rememberCoroutineScope()
     Scaffold(
         containerColor = Color.Transparent,
         bottomBar = {
@@ -359,15 +395,30 @@ fun TabsScreen(navigate: (String) -> Unit) {
         },
     ) { _ ->
         HorizontalPager(
-            pageCount = 3,
+            pageCount = 4,
             state = pagerState,
             beyondBoundsPageCount = 0,
             modifier = Modifier.fillMaxSize(),
         ) { page ->
             when (page) {
                 0 -> Home(navigate = { navigate(it) })
-                1 -> MultiDsuScreen(navigate = { navigate(it) })
-                2 -> vegabobo.dsusideloader.ui.screen.settings.Settings(
+                1 -> MultiDsuScreen(
+                    navigate = { navigate(it) },
+                    onNavigateToHome = {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(0)
+                        }
+                    },
+                )
+                2 -> vegabobo.dsusideloader.ui.screen.gsihub.GsiHubScreen(
+                    navigate = { navigate(it) },
+                    onNavigateToHome = {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(0)
+                        }
+                    },
+                )
+                3 -> vegabobo.dsusideloader.ui.screen.settings.Settings(
                     navigate = { navigate(it) },
                     showBackButton = false,
                 )

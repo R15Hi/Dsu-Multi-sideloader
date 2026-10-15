@@ -48,12 +48,22 @@ class FilenameUtils {
         }
 
         fun queryName(resolver: ContentResolver, uri: Uri): String {
-            val returnCursor: Cursor = resolver.query(uri, null, null, null, null)!!
-            val nameIndex: Int = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-            returnCursor.moveToFirst()
-            val name: String = returnCursor.getString(nameIndex)
-            returnCursor.close()
-            return name
+            if (uri.scheme == "file") {
+                return uri.lastPathSegment ?: ""
+            }
+            return try {
+                val returnCursor: Cursor? = resolver.query(uri, null, null, null, null)
+                if (returnCursor != null && returnCursor.moveToFirst()) {
+                    val nameIndex: Int = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                    val name: String = if (nameIndex != -1) returnCursor.getString(nameIndex) else (uri.lastPathSegment ?: "")
+                    returnCursor.close()
+                    name
+                } else {
+                    uri.lastPathSegment ?: ""
+                }
+            } catch (e: Exception) {
+                uri.lastPathSegment ?: ""
+            }
         }
 
         fun getDigits(input: String): String {
@@ -61,7 +71,18 @@ class FilenameUtils {
         }
 
         fun getLengthFromFile(context: Context, uri: Uri): Long {
-            return DocumentFile.fromSingleUri(context, uri)!!.length()
+            if (uri.scheme == "file") {
+                val path = uri.path
+                if (path != null) {
+                    val f = java.io.File(path)
+                    if (f.exists()) return f.length()
+                }
+            }
+            return try {
+                DocumentFile.fromSingleUri(context, uri)?.length() ?: 0L
+            } catch (e: Exception) {
+                0L
+            }
         }
     }
 }

@@ -30,7 +30,9 @@ import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import vegabobo.dsusideloader.ui.theme.GlassTokens
@@ -57,6 +59,9 @@ fun GlassButton(
     enabled: Boolean = true,
     cornerRadius: Dp = GlassTokens.CornerRadiusButton,
     height: Dp = 50.dp,
+    fontSize: TextUnit = 15.sp,
+    horizontalPadding: Dp = 16.dp,
+    iconSize: Dp = 20.dp,
 ) {
     val shape = RoundedCornerShape(cornerRadius)
     val interactionSource = remember { MutableInteractionSource() }
@@ -126,36 +131,39 @@ fun GlassButton(
                 enabled = enabled,
                 onClick = onClick,
             )
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = horizontalPadding),
         contentAlignment = Alignment.Center,
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
         ) {
+            val spacerWidth = if (iconSize < 16.dp) 4.dp else 8.dp
             if (iconPainter != null) {
                 Icon(
                     painter = iconPainter,
                     contentDescription = null,
                     tint = Color.Unspecified,
-                    modifier = Modifier.size(22.dp),
+                    modifier = Modifier.size(iconSize),
                 )
-                Spacer(Modifier.width(8.dp))
+                Spacer(Modifier.width(spacerWidth))
             } else if (icon != null) {
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
                     tint = animatedContentColor,
-                    modifier = Modifier.size(19.dp),
+                    modifier = Modifier.size(iconSize),
                 )
-                Spacer(Modifier.width(8.dp))
+                Spacer(Modifier.width(spacerWidth))
             }
             Text(
                 text = text,
                 color = animatedContentColor,
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 15.sp,
+                fontSize = fontSize,
                 letterSpacing = 0.2.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
         }
     }

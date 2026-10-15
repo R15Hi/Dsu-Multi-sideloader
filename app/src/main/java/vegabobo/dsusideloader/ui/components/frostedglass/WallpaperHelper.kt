@@ -72,40 +72,41 @@ object WallpaperHelper {
 
     /**
      * Guarantees a non-null, high-fidelity blurred wallpaper bitmap for frosted glass views.
+     * Uses Liquid Glass 55 blur radius standard.
      */
     @Keep
-    suspend fun getBlurredWallpaper(context: Context): Bitmap = withContext(Dispatchers.IO) {
+    suspend fun getBlurredWallpaper(context: Context, blurRadius: Int = 55): Bitmap = withContext(Dispatchers.IO) {
         cachedBlurredWallpaper?.let {
             if (!it.isRecycled) return@withContext it
         }
         try {
-            val real = tryFetchRealWallpaper(context)
+            val real = tryFetchRealWallpaper(context, blurRadius)
             if (real != null) {
                 cachedBlurredWallpaper = real
                 return@withContext real
             }
         } catch (_: Throwable) {}
 
-        val initial = getInitialFastBackdrop(context)
+        val initial = getInitialFastBackdrop(context, blurRadius)
         cachedBlurredWallpaper = initial
         initial
     }
 
     @Keep
-    fun getInitialFastBackdrop(context: Context): Bitmap {
+    fun getInitialFastBackdrop(context: Context, blurRadius: Int = 55): Bitmap {
         cachedBlurredWallpaper?.let {
             if (!it.isRecycled) return it
         }
 
         try {
-            val colorsBmp = tryGenerateWallpaperColorsBitmap(context)
+            val colorsBmp = tryGenerateWallpaperColorsBitmap(context, blurRadius)
             if (colorsBmp != null) {
                 cachedBlurredWallpaper = colorsBmp
                 return colorsBmp
             }
         } catch (_: Throwable) {}
 
-        val meshBmp = generateAcrylicMeshGradient(context)
+        val meshBmp = generateAcrylicMeshGradient(context, blurRadius)
         cachedBlurredWallpaper = meshBmp
         return meshBmp
     }
@@ -148,7 +149,7 @@ object WallpaperHelper {
         }
     }
 
-    private fun tryFetchRealWallpaper(context: Context): Bitmap? {
+    private fun tryFetchRealWallpaper(context: Context, blurRadius: Int = 55): Bitmap? {
         return try {
             val wm = WallpaperManager.getInstance(context)
             val drawable: Drawable = wm.drawable ?: wm.peekDrawable() ?: return null
@@ -158,13 +159,13 @@ object WallpaperHelper {
             val targetH = (bmp.height * (targetW.toFloat() / bmp.width)).toInt().coerceIn(320, 960)
             val scaled = Bitmap.createScaledBitmap(bmp, targetW, targetH, true)
 
-            fastBlur(scaled, radius = 10)
+            fastBlur(scaled, radius = blurRadius)
         } catch (_: Throwable) {
             null
         }
     }
 
-    private fun tryGenerateWallpaperColorsBitmap(context: Context): Bitmap? {
+    private fun tryGenerateWallpaperColorsBitmap(context: Context, blurRadius: Int = 55): Bitmap? {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) return null
         return try {
             val wm = WallpaperManager.getInstance(context)
@@ -190,13 +191,13 @@ object WallpaperHelper {
             )
             canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
 
-            fastBlur(bitmap, radius = 12)
+            fastBlur(bitmap, radius = blurRadius)
         } catch (_: Throwable) {
             null
         }
     }
 
-    private fun generateAcrylicMeshGradient(context: Context): Bitmap {
+    private fun generateAcrylicMeshGradient(context: Context, blurRadius: Int = 55): Bitmap {
         return try {
             val width = 240
             val height = 480
@@ -232,7 +233,7 @@ object WallpaperHelper {
             )
             canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), glowPaint)
 
-            fastBlur(bitmap, radius = 12)
+            fastBlur(bitmap, radius = blurRadius)
         } catch (_: Throwable) {
             Bitmap.createBitmap(16, 16, Bitmap.Config.ARGB_8888).apply {
                 eraseColor(Color.parseColor("#0F172A"))
@@ -268,10 +269,11 @@ object WallpaperHelper {
 
     /**
      * Ultra-fast, 100% fail-safe multi-pass box blur.
-     * Uses clamped coordinate indexing so it is mathematically immune to IndexOutOfBoundsException.
+     * Uses 3 passes of boxBlur to mathematically converge to true Gaussian Blur (Central Limit Theorem).
+     * Tuned for Liquid Glass blur 55.
      */
     @Keep
-    fun fastBlur(sentBitmap: Bitmap, radius: Int = 16): Bitmap {
+    fun fastBlur(sentBitmap: Bitmap, radius: Int = 55): Bitmap {
         return try {
             val w = sentBitmap.width
             val h = sentBitmap.height
@@ -286,7 +288,8 @@ object WallpaperHelper {
             val pix = IntArray(sw * sh)
             outBmp.getPixels(pix, 0, sw, 0, 0, sw, sh)
 
-            val r = (radius / scaleFactor).coerceIn(2, 8)
+            val r = (radius / scaleFactor).coerceIn(2, 20)
+            boxBlur(pix, sw, sh, r)
             boxBlur(pix, sw, sh, r)
             boxBlur(pix, sw, sh, r)
 

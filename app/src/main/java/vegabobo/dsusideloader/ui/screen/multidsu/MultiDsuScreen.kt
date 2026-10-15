@@ -58,6 +58,7 @@ import vegabobo.dsusideloader.util.collectAsStateWithLifecycle
 @Composable
 fun MultiDsuScreen(
     navigate: (String) -> Unit,
+    onNavigateToHome: (() -> Unit)? = null,
     viewModel: MultiDsuViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -123,6 +124,43 @@ fun MultiDsuScreen(
                             Spacer(Modifier.height(4.dp))
                             Text(
                                 "Multi-DSU relies on privileged file swapping which requires full Root access (Magisk/KernelSU). Shizuku is not sufficient.",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    }
+                }
+
+                // Link to GSI Hub
+                CardBox(modifier = Modifier.fillMaxWidth()) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth().padding(4.dp),
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(36.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(Color(0x3306B6D4)),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_settings_new_releases),
+                                contentDescription = null,
+                                tint = Color(0xFF06B6D4),
+                                modifier = Modifier.size(20.dp),
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                "Explore GSI Hub",
+                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+                            Text(
+                                "Browse, download and install latest community & official GSIs from the GSI Hub tab.",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -433,6 +471,43 @@ fun MultiDsuScreen(
                                     }
                                 }
                             }
+                        }
+                    }
+                }
+
+                // Link to GSI Hub
+                CardBox(modifier = Modifier.fillMaxWidth()) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth().padding(4.dp),
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(36.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(Color(0x3306B6D4)),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_settings_new_releases),
+                                contentDescription = null,
+                                tint = Color(0xFF06B6D4),
+                                modifier = Modifier.size(20.dp),
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                "Explore GSI Hub",
+                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+                            Text(
+                                "Browse, download and install latest community & official GSIs from the GSI Hub tab.",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
                         }
                     }
                 }
